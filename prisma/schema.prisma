@@ -1,0 +1,232 @@
+// Prisma schema for SSF Malappuram District Sahityotsav 2026
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+}
+
+enum ItemStatus {
+  PUBLISHED
+  DRAFT
+}
+
+enum ResultStatus {
+  PUBLISHED
+  DRAFT
+}
+
+enum Priority {
+  HIGH
+  NORMAL
+  LOW
+}
+
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  pointLogs PointLog[]
+
+  @@map("users")
+}
+
+model Division {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  code      String   @unique
+  logo      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  points       DivisionPoints?
+  pointLogs    PointLog[]
+  participants Participant[]
+  results              Result[] @relation("ResultFirstPlaceDivision")
+  secondPlaceResults   Result[] @relation("ResultSecondPlaceDivision")
+  thirdPlaceResults    Result[] @relation("ResultThirdPlaceDivision")
+
+  @@map("divisions")
+}
+
+model DivisionPoints {
+  id            String   @id @default(cuid())
+  divisionId    String   @unique
+  division      Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+  currentPoints Float    @default(0)
+  lastUpdated   DateTime @default(now())
+  updatedBy     String?
+
+  @@map("division_points")
+}
+
+model PointLog {
+  id             String   @id @default(cuid())
+  divisionId     String
+  division       Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+  previousPoints Float
+  newPoints      Float
+  reason         String
+  updatedById    String?
+  updatedBy      User?    @relation(fields: [updatedById], references: [id])
+  createdAt      DateTime @default(now())
+
+  @@map("point_logs")
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items        Item[]
+  participants Participant[]
+  results      Result[]
+  schedules    Schedule[]
+
+  @@map("categories")
+}
+
+model Item {
+  id         String     @id @default(cuid())
+  name       String
+  categoryId String
+  category   Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  venue      String?
+  status     ItemStatus @default(DRAFT)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  participants Participant[]
+  results      Result[]
+
+  @@map("items")
+}
+
+model Participant {
+  id         String   @id @default(cuid())
+  name       String
+  divisionId String
+  division   Division @relation(fields: [divisionId], references: [id], onDelete: Cascade)
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  itemId     String
+  item       Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("participants")
+}
+
+model PosterTemplate {
+  id              String   @id @default(cuid())
+  name            String
+  thumbnail       String
+  backgroundImage String
+  primaryColor    String?
+  accentColor     String?
+  textColor       String?
+  customCss       String?  @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  results Result[]
+
+  @@map("poster_templates")
+}
+
+model Result {
+  id         String        @id @default(cuid())
+  categoryId String
+  category   Category      @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  itemId     String
+  item       Item          @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  divisionId String
+  division   Division      @relation("ResultFirstPlaceDivision", fields: [divisionId], references: [id], onDelete: Cascade)
+  venue      String?
+
+  firstPlaceName     String?
+  secondPlaceName    String?
+  secondPlaceDivisionId String?
+  secondPlaceDivision   Division? @relation("ResultSecondPlaceDivision", fields: [secondPlaceDivisionId], references: [id])
+  thirdPlaceName     String?
+  thirdPlaceDivisionId String?
+  thirdPlaceDivision   Division? @relation("ResultThirdPlaceDivision", fields: [thirdPlaceDivisionId], references: [id])
+
+  templateId   String?
+  template     PosterTemplate? @relation(fields: [templateId], references: [id])
+
+  status        ResultStatus @default(DRAFT)
+  publishedDate DateTime?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@map("results")
+}
+
+model GalleryCategory {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+
+  images Gallery[]
+
+  @@map("gallery_categories")
+}
+
+model Gallery {
+  id         String          @id @default(cuid())
+  imageUrl   String
+  caption    String?
+  categoryId String
+  category   GalleryCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt  DateTime        @default(now())
+
+  @@map("gallery")
+}
+
+model Announcement {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  priority    Priority @default(NORMAL)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("announcements")
+}
+
+model Schedule {
+  id          String   @id @default(cuid())
+  day         String
+  date        DateTime
+  time        String
+  title       String
+  venue       String
+  categoryId  String?
+  category    Category? @relation(fields: [categoryId], references: [id])
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("schedules")
+}
