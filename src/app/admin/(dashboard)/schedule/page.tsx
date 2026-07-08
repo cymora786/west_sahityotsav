@@ -1,4 +1,4 @@
-import { getSchedules, getCategories } from "@/lib/queries";
+import { getApiSchedule } from "@/lib/sahityotsav-api";
 import {
   Table,
   TableBody,
@@ -9,103 +9,115 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ScheduleDialog } from "./schedule-dialog";
-import { DeleteButton } from "@/components/admin/delete-button";
-import { deleteSchedule } from "./actions";
+import { Info } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-export const metadata = {
-  title: "Schedule",
+export const metadata = { title: "Schedule" };
+
+const STATUS_STYLES: Record<string, string> = {
+  Completed: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
+  "In Progress": "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300",
+  Upcoming: "bg-muted text-muted-foreground",
 };
 
 export default async function AdminSchedulePage() {
-  const [schedules, categories] = await Promise.all([
-    getSchedules(),
-    getCategories(),
-  ]);
+  const apiSchedule = await getApiSchedule();
+  const entries = apiSchedule?.schedule ?? [];
 
-  const categoryOptions = categories.map((c) => ({ id: c.id, name: c.name }));
+  // Group by date
+  const grouped = entries.reduce<Record<string, typeof entries>>((acc, entry) => {
+    acc[entry.date] = acc[entry.date] ? [...acc[entry.date], entry] : [entry];
+    return acc;
+  }, {});
+  const days = Object.keys(grouped).sort();
+
+  function formatDate(dateStr: string) {
+    return new Date(dateStr + "T00:00:00").toLocaleDateString("en-IN", {
+      weekday: "short",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  }
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Schedule</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage the event schedule shown on the public site.
-          </p>
-        </div>
-        <ScheduleDialog categories={categoryOptions} />
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Schedule</h1>
+        <p className="text-sm text-muted-foreground">
+          Event schedule synced from the sahityotsav.com API.
+        </p>
       </div>
 
-      <Card>
-        <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Day</TableHead>
-                <TableHead>Date</TableHead>
-                <TableHead>Time</TableHead>
-                <TableHead>Title</TableHead>
-                <TableHead>Venue</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead className="w-24 text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {schedules.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
-                    No schedule items yet. Add your first item to get started.
-                  </TableCell>
-                </TableRow>
-              )}
-              {schedules.map((schedule) => (
-                <TableRow key={schedule.id}>
-                  <TableCell className="font-medium">{schedule.day}</TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {schedule.date.toLocaleDateString("en-IN", {
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">{schedule.time}</TableCell>
-                  <TableCell>{schedule.title}</TableCell>
-                  <TableCell className="text-muted-foreground">{schedule.venue}</TableCell>
-                  <TableCell>
-                    {schedule.category ? (
-                      <Badge variant="secondary">{schedule.category.name}</Badge>
-                    ) : (
-                      "—"
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center justify-end gap-1">
-                      <ScheduleDialog
-                        schedule={{
-                          id: schedule.id,
-                          day: schedule.day,
-                          date: schedule.date,
-                          time: schedule.time,
-                          title: schedule.title,
-                          venue: schedule.venue,
-                          categoryId: schedule.categoryId,
-                          description: schedule.description,
-                        }}
-                        categories={categoryOptions}
-                      />
-                      <DeleteButton
-                        action={deleteSchedule.bind(null, schedule.id)}
-                        confirmMessage={`Delete schedule item "${schedule.title}"?`}
-                      />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+      <div className="flex items-start gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-300">
+        <Info className="mt-0.5 size-4 shrink-0" />
+        <p>
+          This data is loaded live from the external API. Changes must be made on{" "}
+          <strong>sahityotsav.com</strong> and will reflect here automatically.
+        </p>
+      </div>
+
+      {days.length === 0 ? (
+        <Card>
+          <CardContent className="h-24 flex items-center justify-center text-muted-foreground">
+            No schedule data found from API.
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-6">
+          {days.map((day, dayIndex) => (
+            <div key={day}>
+              <h2 className="mb-3 text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                Day {dayIndex + 1} — {formatDate(day)}
+              </h2>
+              <Card>
+                <CardContent className="p-0">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Time</TableHead>
+                        <TableHead>Competition</TableHead>
+                        <TableHead>Category</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead>Venue</TableHead>
+                        <TableHead>Status</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {grouped[day].map((entry) => (
+                        <TableRow key={`${entry.competitionId}-${entry.startTime}`}>
+                          <TableCell className="text-sm font-medium whitespace-nowrap">
+                            {entry.startTime}
+                            {entry.endTime && (
+                              <span className="text-muted-foreground"> – {entry.endTime}</span>
+                            )}
+                          </TableCell>
+                          <TableCell className="font-medium">{entry.competitionName}</TableCell>
+                          <TableCell>
+                            <Badge variant="secondary">{entry.category}</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{entry.type}</Badge>
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">{entry.stageName}</TableCell>
+                          <TableCell>
+                            <span className={cn(
+                              "rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide",
+                              STATUS_STYLES[entry.status] ?? STATUS_STYLES.Upcoming
+                            )}>
+                              {entry.status}
+                            </span>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -1,13 +1,7 @@
-import {
-  getStandingsWithStats,
-  getDivisionsList,
-  getCategories,
-  getGallery,
-  getPublishedResultsCount,
-} from "@/lib/queries";
+import { getDivisionsList, getGallery } from "@/lib/queries";
+import { getTeamPoints, getPublishedCompetitions } from "@/lib/sahityotsav-api";
 import { PageBanner } from "@/components/site/page-banner";
 import { StandingsTable } from "@/components/site/standings/standings-table";
-import { FilterStandings } from "@/components/site/standings/filter-standings";
 import { StandingsByCategory } from "@/components/site/standings/standings-by-category";
 import { Info, Trophy, Building2 } from "lucide-react";
 
@@ -18,57 +12,53 @@ export const metadata = {
 };
 
 export default async function StandingsPage() {
-  const [standings, divisions, categories, [bannerImage], publishedResultsCount] = await Promise.all([
-    getStandingsWithStats(),
+  const [apiPoints, competitions, divisions, [bannerImage]] = await Promise.all([
+    getTeamPoints(0),
+    getPublishedCompetitions(),
     getDivisionsList(),
-    getCategories(),
     getGallery(1),
-    getPublishedResultsCount(),
   ]);
 
-  const rows = standings.map((division) => ({
-    id: division.id,
-    name: division.name,
-    code: division.code,
-    slug: division.slug,
-    points: division.points?.currentPoints ?? 0,
-    itemsParticipated: division.itemsParticipated,
-  }));
+  const divisionMap = new Map(divisions.map((d) => [d.name.toLowerCase(), d]));
+
+  const rows = (apiPoints ?? []).map((entry, i) => {
+    const local = divisionMap.get(entry.name.toLowerCase());
+    return {
+      id: local?.id ?? `api-${i}`,
+      name: entry.name,
+      code: local?.code ?? entry.name.slice(0, 3).toUpperCase(),
+      slug: local?.slug ?? entry.name.toLowerCase().replace(/\s+/g, "-"),
+      points: entry.point,
+      itemsParticipated: 0,
+    };
+  });
+
+  const publishedCount = competitions?.length ?? 0;
 
   return (
     <>
       <PageBanner
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Standings" }]}
         title="Division Standings"
-        description="Live points and rankings across all 10 divisions, updated as results are published."
+        description="Live points and rankings across all divisions, updated as results are published."
         imageUrl={bannerImage?.imageUrl}
         stats={[
           {
             icon: Trophy,
-            value: String(publishedResultsCount),
+            value: String(publishedCount),
             label: "Results Published",
             href: "/results",
           },
           {
             icon: Building2,
-            value: String(divisions.length),
+            value: String(rows.length || divisions.length),
             label: "Divisions",
           },
         ]}
       />
 
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <StandingsTable rows={rows} />
-          </div>
-          <div className="space-y-6">
-            <FilterStandings
-              divisions={divisions.map((d) => ({ value: d.slug, label: d.name }))}
-              categories={categories.map((c) => ({ value: c.slug, label: c.name }))}
-            />
-          </div>
-        </div>
+        <StandingsTable rows={rows} />
 
         <div className="mt-12">
           <StandingsByCategory />
@@ -76,7 +66,7 @@ export default async function StandingsPage() {
 
         <div className="mt-8 flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-muted-foreground">
           <Info className="size-4 shrink-0 text-primary" />
-          Click on a division name to view its detailed profile, results, and participants.
+          Click on a division name to view its detailed profile and results.
         </div>
       </section>
     </>

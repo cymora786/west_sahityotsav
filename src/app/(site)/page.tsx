@@ -5,7 +5,6 @@ import { CategoryLeaders } from "@/components/site/home/category-leaders";
 import { ProgrammeProgress } from "@/components/site/home/programme-progress";
 import { LatestResultsCompact } from "@/components/site/home/latest-results-compact";
 import { QuickLinksGrid } from "@/components/site/home/quick-links-grid";
-import { ExploreCategories } from "@/components/site/home/explore-categories";
 import { GalleryPreview } from "@/components/site/home/gallery-preview";
 import { AnnouncementsWidget } from "@/components/site/home/announcements-widget";
 import { Reveal } from "@/components/site/reveal";
@@ -36,9 +35,6 @@ export default function HomePage() {
           <QuickLinksGrid />
         </Reveal>
       </section>
-      <Reveal>
-        <ExploreCategories />
-      </Reveal>
       <Reveal>
         <GalleryPreview />
       </Reveal>

@@ -39,12 +39,23 @@ const TEMPLATE_PREVIEW_CLASSNAMES: Record<PosterTemplateKey, string> = {
 
 type PosterTemplate = Awaited<ReturnType<typeof getPosterTemplates>>[number];
 
+type ShareSettings = {
+  whatsappTemplate?: string | null;
+  instagramCaption?: string | null;
+};
+
+function applyTemplate(template: string, vars: Record<string, string>): string {
+  return template.replace(/\{(\w+)\}/g, (_, key) => vars[key] ?? "");
+}
+
 export function PosterView({
   result,
   templates,
+  shareSettings,
 }: {
   result: ResultDetail;
   templates: PosterTemplate[];
+  shareSettings?: ShareSettings;
 }) {
   const posterRef = React.useRef<HTMLDivElement>(null);
   const [templateKey, setTemplateKey] = React.useState<PosterTemplateKey>(
@@ -94,19 +105,39 @@ export function PosterView({
     pdf.save(`${result.item.name.replace(/\s+/g, "-").toLowerCase()}-result.pdf`);
   };
 
-  const shareText = [
+  const [shareUrl, setShareUrl] = React.useState("");
+  React.useEffect(() => { setShareUrl(window.location.href); }, []);
+
+  const shareVars: Record<string, string> = {
+    competition: result.item.name,
+    category: result.category.name,
+    winner1: result.firstPlaceName ?? result.division.name ?? "",
+    winner2: result.secondPlaceName ?? "",
+    winner3: result.thirdPlaceName ?? "",
+    team1: result.division.name ?? "",
+    team2: result.secondPlaceDivision?.name ?? "",
+    team3: result.thirdPlaceDivision?.name ?? "",
+    url: shareUrl,
+  };
+
+  const defaultWhatsapp = [
     `🏆 *${result.item.name}* — ${result.category.name}`,
     `📍 *${SITE_NAME}*`,
     ``,
-    `🥇 1st: *${result.firstPlaceName ?? result.division.name}*`,
+    `🥇 1st: *${shareVars.winner1}*`,
     result.secondPlaceName ? `🥈 2nd: *${result.secondPlaceName}*` : null,
     result.thirdPlaceName ? `🥉 3rd: *${result.thirdPlaceName}*` : null,
     ``,
-    `🔗 View full result:`,
-  ]
-    .filter(Boolean)
-    .join("\n");
-  const shareUrl = typeof window !== "undefined" ? window.location.href : "";
+    `🔗 View full result:\n${shareUrl}`,
+  ].filter(Boolean).join("\n");
+
+  const shareText = shareSettings?.whatsappTemplate
+    ? applyTemplate(shareSettings.whatsappTemplate, shareVars)
+    : defaultWhatsapp;
+
+  const instagramText = shareSettings?.instagramCaption
+    ? applyTemplate(shareSettings.instagramCaption, shareVars)
+    : shareUrl;
 
   const handleCopyLink = async () => {
     await navigator.clipboard.writeText(shareUrl);
@@ -138,7 +169,7 @@ export function PosterView({
       }
     }
     window.open(
-      `https://wa.me/?text=${encodeURIComponent(`${shareText}\n${shareUrl}`)}`,
+      `https://wa.me/?text=${encodeURIComponent(shareText)}`,
       "_blank"
     );
   };
@@ -151,8 +182,8 @@ export function PosterView({
   };
 
   const handleShareInstagram = async () => {
-    await navigator.clipboard.writeText(shareUrl);
-    toast.success("Link copied — paste it in your Instagram story or bio");
+    await navigator.clipboard.writeText(instagramText);
+    toast.success("Caption copied — paste it in your Instagram post or story");
     window.open("https://www.instagram.com/", "_blank");
   };
 

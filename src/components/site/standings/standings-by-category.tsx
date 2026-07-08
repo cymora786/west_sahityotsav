@@ -1,16 +1,18 @@
-import { getCategoryLeaders } from "@/lib/queries";
+import { getApiCategoryLeaders } from "@/lib/sahityotsav-api";
 import { Crown } from "lucide-react";
 
-const CATEGORY_STYLES: Record<string, string> = {
-  Senior: "bg-emerald-500/15 text-emerald-600",
-  "Higher Secondary": "bg-blue-500/15 text-blue-600",
-  "High School": "bg-purple-500/15 text-purple-600",
-  Junior: "bg-orange-500/15 text-orange-600",
-  Primary: "bg-teal-500/15 text-teal-600",
-};
+const CATEGORY_COLORS = [
+  "bg-emerald-500/15 text-emerald-600",
+  "bg-blue-500/15 text-blue-600",
+  "bg-purple-500/15 text-purple-600",
+  "bg-orange-500/15 text-orange-600",
+  "bg-teal-500/15 text-teal-600",
+  "bg-rose-500/15 text-rose-600",
+  "bg-amber-500/15 text-amber-600",
+];
 
 export async function StandingsByCategory() {
-  const leaders = await getCategoryLeaders();
+  const leaders = await getApiCategoryLeaders();
 
   if (leaders.length === 0) return null;
 
@@ -21,23 +23,21 @@ export async function StandingsByCategory() {
         Standings by Category
       </h2>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        {leaders.map(({ category, division, wins }) => (
-          <div key={category.id} className="rounded-2xl border bg-card p-5 text-center">
+        {leaders.map(({ category, teamName, wins }, i) => (
+          <div key={category} className="rounded-2xl border bg-card p-5 text-center">
             <div
               className={`mx-auto mb-3 flex size-10 items-center justify-center rounded-xl ${
-                CATEGORY_STYLES[category.name] ?? "bg-primary/10 text-primary"
+                CATEGORY_COLORS[i % CATEGORY_COLORS.length]
               }`}
             >
               <Crown className="size-5" />
             </div>
-            <h3 className="font-semibold">{category.name}</h3>
-            <p className="mt-1 text-base font-bold">{division?.name ?? "TBD"}</p>
-            {division && (
-              <p className="text-sm text-muted-foreground">
-                <span className="font-bold text-primary">{wins}</span> first place
-                {wins === 1 ? "" : "s"}
-              </p>
-            )}
+            <h3 className="font-semibold">{category}</h3>
+            <p className="mt-1 text-base font-bold">{teamName}</p>
+            <p className="text-sm text-muted-foreground">
+              <span className="font-bold text-primary">{wins}</span> first place
+              {wins === 1 ? "" : "s"}
+            </p>
           </div>
         ))}
       </div>

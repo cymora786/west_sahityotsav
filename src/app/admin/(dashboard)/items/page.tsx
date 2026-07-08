@@ -1,4 +1,4 @@
-import { getItems, getCategories } from "@/lib/queries";
+import { getPublishedCompetitions } from "@/lib/sahityotsav-api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -9,28 +9,29 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ItemDialog } from "./item-dialog";
-import { DeleteButton } from "@/components/admin/delete-button";
-import { deleteItem } from "./actions";
+import { Info } from "lucide-react";
 
-export const metadata = {
-  title: "Items",
-};
+export const metadata = { title: "Items" };
 
 export default async function AdminItemsPage() {
-  const [items, categories] = await Promise.all([getItems(), getCategories()]);
-  const categoryOptions = categories.map((c) => ({ id: c.id, name: c.name }));
+  const competitions = await getPublishedCompetitions();
+  const items = competitions ?? [];
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Items</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage competition items within each category.
-          </p>
-        </div>
-        <ItemDialog categories={categoryOptions} />
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Items</h1>
+        <p className="text-sm text-muted-foreground">
+          Competition items synced from the sahityotsav.com API.
+        </p>
+      </div>
+
+      <div className="flex items-start gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-300">
+        <Info className="mt-0.5 size-4 shrink-0" />
+        <p>
+          This data is loaded live from the external API. Changes must be made on{" "}
+          <strong>sahityotsav.com</strong> and will reflect here automatically.
+        </p>
       </div>
 
       <Card>
@@ -38,52 +39,33 @@ export default async function AdminItemsPage() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>#</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Category</TableHead>
-                <TableHead>Venue</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="w-24 text-right">Actions</TableHead>
+                <TableHead>Stage / Venue</TableHead>
+                <TableHead>Result No.</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {items.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
-                    No items yet. Add your first item to get started.
+                    No items found from API.
                   </TableCell>
                 </TableRow>
               )}
-              {items.map((item) => (
+              {items.map((item, i) => (
                 <TableRow key={item.id}>
+                  <TableCell className="text-muted-foreground">{i + 1}</TableCell>
                   <TableCell className="font-medium">{item.name}</TableCell>
                   <TableCell>
-                    <Badge variant="secondary">{item.category.name}</Badge>
+                    <Badge variant="secondary">{item.category}</Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground">
-                    {item.venue ?? "—"}
+                    {item.stage ?? "—"}
                   </TableCell>
-                  <TableCell>
-                    <Badge variant={item.status === "PUBLISHED" ? "default" : "outline"}>
-                      {item.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center justify-end gap-1">
-                      <ItemDialog
-                        item={{
-                          id: item.id,
-                          name: item.name,
-                          categoryId: item.categoryId,
-                          venue: item.venue,
-                          status: item.status,
-                        }}
-                        categories={categoryOptions}
-                      />
-                      <DeleteButton
-                        action={deleteItem.bind(null, item.id)}
-                        confirmMessage={`Delete ${item.name}? This will remove related participants and results.`}
-                      />
-                    </div>
+                  <TableCell className="text-muted-foreground">
+                    {item.resultNumber ?? "—"}
                   </TableCell>
                 </TableRow>
               ))}

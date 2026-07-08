@@ -263,6 +263,33 @@ export async function getRecentPointLogs(limit = 5) {
   });
 }
 
+export async function getEventSettings() {
+  return prisma.eventSettings.findUnique({ where: { id: "singleton" } });
+}
+
+export async function upsertEventSettings(data: {
+  whatsappTemplate?: string;
+  instagramCaption?: string;
+  heroBadge?: string;
+  heroTitle?: string;
+  heroHighlight?: string;
+  heroDescription?: string;
+  footerTagline?: string;
+  footerPhone?: string;
+  footerEmail?: string;
+  footerAddress?: string;
+  footerOrganization?: string;
+  footerFacebook?: string;
+  footerInstagram?: string;
+  footerWhatsapp?: string;
+}) {
+  return prisma.eventSettings.upsert({
+    where: { id: "singleton" },
+    update: data,
+    create: { id: "singleton", ...data },
+  });
+}
+
 export async function getDashboardStats() {
   const [
     divisions,

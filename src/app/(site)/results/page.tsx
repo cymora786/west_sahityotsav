@@ -1,8 +1,8 @@
-import { getAllResults, getCategories, getDivisionsList, getGallery } from "@/lib/queries";
+import { getPublishedCompetitions } from "@/lib/sahityotsav-api";
+import { getGallery } from "@/lib/queries";
 import { PageBanner } from "@/components/site/page-banner";
-import { ResultsExplorer } from "@/components/site/results/results-explorer";
-import { format } from "date-fns";
-import { Trophy, CalendarCheck, ListChecks } from "lucide-react";
+import { ApiResultsGrid } from "@/components/site/results/api-results-grid";
+import { Trophy, ListChecks } from "lucide-react";
 
 export const metadata = {
   title: "Results",
@@ -11,18 +11,12 @@ export const metadata = {
 };
 
 export default async function ResultsPage() {
-  const [results, categories, divisions, [bannerImage]] = await Promise.all([
-    getAllResults(),
-    getCategories(),
-    getDivisionsList(),
+  const [competitions, [bannerImage]] = await Promise.all([
+    getPublishedCompetitions(),
     getGallery(1),
   ]);
 
-  const lastPublished = results.reduce<Date | null>((latest, result) => {
-    if (!result.publishedDate) return latest;
-    if (!latest || result.publishedDate > latest) return result.publishedDate;
-    return latest;
-  }, null);
+  const results = competitions ?? [];
 
   return (
     <>
@@ -38,11 +32,6 @@ export default async function ResultsPage() {
             label: "Total Results",
           },
           {
-            icon: CalendarCheck,
-            value: lastPublished ? format(lastPublished, "dd MMM yyyy") : "—",
-            label: "Last Published",
-          },
-          {
             icon: ListChecks,
             value: "All Updates",
             label: "Stay informed",
@@ -51,11 +40,7 @@ export default async function ResultsPage() {
         ]}
       />
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <ResultsExplorer
-          results={results}
-          categories={categories.map((c) => ({ id: c.id, name: c.name }))}
-          divisions={divisions}
-        />
+        <ApiResultsGrid results={results} />
       </div>
     </>
   );

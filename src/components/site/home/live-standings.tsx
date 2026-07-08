@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { getStandings } from "@/lib/queries";
+import { getTeamPoints } from "@/lib/sahityotsav-api";
+import { getDivisionsList } from "@/lib/queries";
 import { ArrowRight, Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -10,14 +11,15 @@ const MEDAL_STYLES = [
 ];
 
 export async function LiveStandings() {
-  const standings = await getStandings();
+  const [apiPoints, divisions] = await Promise.all([
+    getTeamPoints(0),
+    getDivisionsList(),
+  ]);
 
-  if (standings.length === 0) return null;
+  if (!apiPoints || apiPoints.length === 0) return null;
 
-  const maxPoints = Math.max(
-    ...standings.map((division) => division.points?.currentPoints ?? 0),
-    1
-  );
+  const divisionMap = new Map(divisions.map((d) => [d.name.toLowerCase(), d]));
+  const maxPoints = Math.max(...apiPoints.map((t) => t.point), 1);
 
   return (
     <div className="h-full rounded-2xl bg-emerald-950 p-6 text-white">
@@ -34,11 +36,12 @@ export async function LiveStandings() {
       </div>
 
       <ul className="space-y-3">
-        {standings.map((division, index) => {
-          const points = division.points?.currentPoints ?? 0;
-          const width = Math.max((points / maxPoints) * 100, 4);
+        {apiPoints.map((team, index) => {
+          const local = divisionMap.get(team.name.toLowerCase());
+          const slug = local?.slug ?? team.name.toLowerCase().replace(/\s+/g, "-");
+          const width = Math.max((team.point / maxPoints) * 100, 4);
           return (
-            <li key={division.id} className="flex items-center gap-3">
+            <li key={team.name} className="flex items-center gap-3">
               <span
                 className={cn(
                   "flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold",
@@ -50,13 +53,14 @@ export async function LiveStandings() {
               <div className="min-w-0 flex-1">
                 <div className="mb-1 flex items-center justify-between gap-2">
                   <Link
-                    href={`/division/${division.slug}`}
+                    href={`/division/${slug}`}
                     className="truncate text-sm font-medium hover:underline"
                   >
-                    {division.name}
+                    {team.name}
                   </Link>
                   <span className="shrink-0 text-sm font-bold">
-                    {points} <span className="text-xs font-normal text-white/60">Points</span>
+                    {team.point}{" "}
+                    <span className="text-xs font-normal text-white/60">Points</span>
                   </span>
                 </div>
                 <div className="h-1.5 overflow-hidden rounded-full bg-white/10">

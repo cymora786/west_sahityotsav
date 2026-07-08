@@ -8,6 +8,7 @@ import {
   LayoutTemplate,
   BookOpen,
   ListOrdered,
+  Share2,
 } from "lucide-react";
 
 export const ADMIN_NAV_GROUPS = [
@@ -49,6 +50,12 @@ export const ADMIN_NAV_GROUPS = [
         icon: Megaphone,
       },
       { href: "/admin/schedule", label: "Schedule", icon: CalendarDays },
+    ],
+  },
+  {
+    title: "Settings",
+    items: [
+      { href: "/admin/settings", label: "Share Settings", icon: Share2 },
     ],
   },
 ] as const;

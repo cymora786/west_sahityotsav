@@ -1,5 +1,4 @@
-import Image from "next/image";
-import { getStandings } from "@/lib/queries";
+import { getTeamPoints } from "@/lib/sahityotsav-api";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -10,28 +9,29 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DivisionDialog } from "./division-dialog";
-import { DeleteButton } from "@/components/admin/delete-button";
-import { deleteDivision } from "./actions";
-import { Trophy } from "lucide-react";
+import { Info, Trophy } from "lucide-react";
 
-export const metadata = {
-  title: "Divisions",
-};
+export const metadata = { title: "Divisions" };
 
 export default async function AdminDivisionsPage() {
-  const divisions = await getStandings();
+  const teams = await getTeamPoints();
+  const divisions = teams ?? [];
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Divisions</h1>
-          <p className="text-sm text-muted-foreground">
-            Manage competing divisions and their identity.
-          </p>
-        </div>
-        <DivisionDialog />
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Divisions</h1>
+        <p className="text-sm text-muted-foreground">
+          Division standings synced from the sahityotsav.com API.
+        </p>
+      </div>
+
+      <div className="flex items-start gap-2 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-300">
+        <Info className="mt-0.5 size-4 shrink-0" />
+        <p>
+          This data is loaded live from the external API. Changes must be made on{" "}
+          <strong>sahityotsav.com</strong> and will reflect here automatically.
+        </p>
       </div>
 
       <Card>
@@ -39,66 +39,33 @@ export default async function AdminDivisionsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-12"></TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Code</TableHead>
-                <TableHead>Slug</TableHead>
+                <TableHead className="w-12">Rank</TableHead>
+                <TableHead>Division / Team</TableHead>
                 <TableHead className="text-right">Points</TableHead>
-                <TableHead className="w-24 text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {divisions.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} className="h-24 text-center text-muted-foreground">
-                    No divisions yet. Add your first division to get started.
+                  <TableCell colSpan={3} className="h-24 text-center text-muted-foreground">
+                    No division data found from API.
                   </TableCell>
                 </TableRow>
               )}
-              {divisions.map((division) => (
-                <TableRow key={division.id}>
+              {divisions.map((team, i) => (
+                <TableRow key={team.name}>
                   <TableCell>
-                    {division.logo ? (
-                      <div className="relative size-8 overflow-hidden rounded-full border">
-                        <Image
-                          src={division.logo}
-                          alt={division.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <span className="flex size-8 items-center justify-center rounded-full bg-primary/10 text-primary">
-                        <Trophy className="size-4" />
+                    {i === 0 ? (
+                      <span className="flex size-7 items-center justify-center rounded-full bg-amber-100 text-amber-700">
+                        <Trophy className="size-3.5" />
                       </span>
+                    ) : (
+                      <Badge variant="outline">{i + 1}</Badge>
                     )}
                   </TableCell>
-                  <TableCell className="font-medium">{division.name}</TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">{division.code}</Badge>
-                  </TableCell>
-                  <TableCell className="text-muted-foreground">
-                    {division.slug}
-                  </TableCell>
-                  <TableCell className="text-right font-semibold text-primary">
-                    {division.points?.currentPoints ?? 0}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center justify-end gap-1">
-                      <DivisionDialog
-                        division={{
-                          id: division.id,
-                          name: division.name,
-                          slug: division.slug,
-                          code: division.code,
-                          logo: division.logo,
-                        }}
-                      />
-                      <DeleteButton
-                        action={deleteDivision.bind(null, division.id)}
-                        confirmMessage={`Delete ${division.name}? This will remove all related points, results and participants.`}
-                      />
-                    </div>
+                  <TableCell className="font-medium">{team.name}</TableCell>
+                  <TableCell className="text-right text-lg font-bold text-primary">
+                    {team.point}
                   </TableCell>
                 </TableRow>
               ))}

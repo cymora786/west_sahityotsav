@@ -215,6 +215,30 @@ model Announcement {
   @@map("announcements")
 }
 
+model EventSettings {
+  id                  String   @id @default("singleton")
+  // Share settings
+  whatsappTemplate    String?  @db.Text
+  instagramCaption    String?  @db.Text
+  // Homepage hero
+  heroBadge           String?
+  heroTitle           String?
+  heroHighlight       String?
+  heroDescription     String?
+  // Footer
+  footerTagline       String?
+  footerPhone         String?
+  footerEmail         String?
+  footerAddress       String?
+  footerOrganization  String?
+  footerFacebook      String?
+  footerInstagram     String?
+  footerWhatsapp      String?
+  updatedAt           DateTime @updatedAt
+
+  @@map("event_settings")
+}
+
 model Schedule {
   id          String   @id @default(cuid())
   day         String
