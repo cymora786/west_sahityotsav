@@ -439,4 +439,3 @@ export function PosterDragEditor({ layout, bgImage, onChange }: Props) {
   );
 }
 
-export { fontFamily };
