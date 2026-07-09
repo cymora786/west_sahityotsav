@@ -60,6 +60,38 @@ export type ApiSchedule = {
   schedule: ApiScheduleEntry[];
 };
 
+export type ApiParticipantCompetition = {
+  competitionName: string;
+  category?: string;
+  type?: string;
+  stage?: string;
+  result?: string;
+  grade?: string;
+  point?: number;
+  prize?: string | null;
+  rank?: number;
+};
+
+export type ApiParticipantDetails = {
+  participant: {
+    id: string;
+    chestNumber: string;
+    fullName: string;
+    gender?: string;
+    category?: string;
+    teamName?: string;
+    photo?: string;
+    eventName?: string;
+  };
+  competitionOverview: {
+    totalCompetitions: number;
+    completedCompetitions: number;
+    prizesWon: number;
+    prizesPendingCollection: number;
+  };
+  competitions: ApiParticipantCompetition[];
+};
+
 export type ApiCategoryLeader = {
   category: string;
   teamName: string;

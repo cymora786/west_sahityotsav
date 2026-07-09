@@ -9,6 +9,8 @@ import {
   BookOpen,
   ListOrdered,
   Share2,
+  FileText,
+  Award,
 } from "lucide-react";
 
 export const ADMIN_NAV_GROUPS = [
@@ -33,6 +35,7 @@ export const ADMIN_NAV_GROUPS = [
       { href: "/admin/categories", label: "Categories", icon: BookOpen },
       { href: "/admin/items", label: "Items", icon: ListChecks },
       { href: "/admin/results", label: "Results", icon: Trophy },
+      { href: "/admin/certificates", label: "Certificates", icon: Award },
       {
         href: "/admin/templates",
         label: "Poster Templates",
@@ -55,6 +58,7 @@ export const ADMIN_NAV_GROUPS = [
   {
     title: "Settings",
     items: [
+      { href: "/admin/content", label: "Content Settings", icon: FileText },
       { href: "/admin/settings", label: "Share Settings", icon: Share2 },
     ],
   },

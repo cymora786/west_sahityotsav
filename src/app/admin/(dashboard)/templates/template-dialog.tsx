@@ -17,6 +17,8 @@ import { ImageUpload } from "@/components/admin/image-upload";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Pencil } from "lucide-react";
 import { createTemplate, updateTemplate, type ActionState } from "./actions";
+import { PosterDragEditor, parsePosterLayout, DEFAULT_POSTER_LAYOUT } from "@/components/admin/poster-drag-editor";
+import type { PosterLayout } from "@/components/admin/poster-drag-editor";
 
 type Template = {
   id: string;
@@ -27,6 +29,7 @@ type Template = {
   accentColor?: string | null;
   textColor?: string | null;
   customCss?: string | null;
+  layout?: string | null;
 };
 
 const initialState: ActionState = {};
@@ -41,6 +44,10 @@ export function TemplateDialog({ template }: { template?: Template }) {
   const [backgroundImage, setBackgroundImage] = React.useState(
     template?.backgroundImage ?? ""
   );
+  const [posterLayout, setPosterLayout] = React.useState<PosterLayout>(
+    parsePosterLayout(template?.layout)
+  );
+
   const [customStyle, setCustomStyle] = React.useState(
     Boolean(template?.primaryColor || template?.accentColor || template?.textColor)
   );
@@ -180,6 +187,17 @@ export function TemplateDialog({ template }: { template?: Template }) {
                 <input type="hidden" name="textColor" value="" />
               </>
             )}
+          </div>
+
+          {/* Layout drag editor */}
+          <div className="space-y-2">
+            <Label>Block Layout</Label>
+            <PosterDragEditor
+              layout={posterLayout}
+              bgImage={backgroundImage || null}
+              onChange={setPosterLayout}
+            />
+            <input type="hidden" name="layout" value={JSON.stringify(posterLayout)} />
           </div>
 
           <div className="space-y-2">

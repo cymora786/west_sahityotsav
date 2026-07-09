@@ -23,6 +23,7 @@ import {
   POSTER_COMPONENTS,
   POSTER_TEMPLATES,
   resolveTemplateKey,
+  CustomLayoutPoster,
   type PosterTemplateKey,
   type ResultDetail,
 } from "@/components/site/results/poster-templates";
@@ -73,6 +74,7 @@ export function PosterView({
   const PosterComponent = POSTER_COMPONENTS[templateKey];
   const selectedTemplate = templatesByKey.get(templateKey) ?? result.template;
   const displayResult: ResultDetail = { ...result, template: selectedTemplate };
+  const useCustomLayout = Boolean(selectedTemplate?.layout);
 
   const handleDownload = async (type: "png" | "jpeg") => {
     if (!posterRef.current) return;
@@ -192,7 +194,7 @@ export function PosterView({
       {/* Poster preview */}
       <div className="group relative overflow-hidden rounded-2xl shadow-xl ring-1 ring-border">
         <div ref={posterRef} className="aspect-[4/5] w-full">
-          <PosterComponent result={displayResult} />
+          {useCustomLayout ? <CustomLayoutPoster result={displayResult} /> : <PosterComponent result={displayResult} />}
         </div>
 
         {/* Expand overlay button */}
@@ -216,7 +218,7 @@ export function PosterView({
               {result.item.name} — {result.category.name} poster
             </DialogTitle>
             <div className="aspect-[4/5] overflow-hidden rounded-xl">
-              <PosterComponent result={displayResult} />
+              {useCustomLayout ? <CustomLayoutPoster result={displayResult} /> : <PosterComponent result={displayResult} />}
             </div>
           </DialogContent>
         </Dialog>

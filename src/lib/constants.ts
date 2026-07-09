@@ -8,6 +8,7 @@ export const NAV_LINKS = [
   { href: "/schedule", label: "Schedule" },
   { href: "/gallery", label: "Gallery" },
   { href: "/announcements", label: "Announcements" },
+  { href: "/participants", label: "My Details" },
 ] as const;
 
 export const CATEGORY_NAMES = [

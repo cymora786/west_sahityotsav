@@ -2,11 +2,30 @@ import Link from "next/link";
 import { Leaf, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { FacebookIcon, InstagramIcon } from "@/components/site/social-icons";
 import { NAV_LINKS, SITE_NAME } from "@/lib/constants";
+import { getEventSettings } from "@/lib/queries";
 
 const FIRST_COLUMN = NAV_LINKS.slice(0, 4);
 const SECOND_COLUMN = NAV_LINKS.slice(4);
 
-export function Footer() {
+const D = {
+  tagline: "Empowering Through Knowledge, Literature & Culture",
+  phone: "+91 1234 567 890",
+  email: "info@ssfmalappuramsahityotsav.in",
+  address: "Malappuram, Kerala, India",
+  organization: "SSF Malappuram West Committee",
+};
+
+export async function Footer() {
+  const settings = await getEventSettings();
+  const tagline = settings?.footerTagline || D.tagline;
+  const phone = settings?.footerPhone || D.phone;
+  const email = settings?.footerEmail || D.email;
+  const address = settings?.footerAddress || D.address;
+  const organization = settings?.footerOrganization || D.organization;
+  const fbHref = settings?.footerFacebook || "#";
+  const igHref = settings?.footerInstagram || "#";
+  const waHref = settings?.footerWhatsapp || "#";
+
   return (
     <footer className="bg-emerald-950 text-emerald-100">
       <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-4 lg:px-8">
@@ -20,25 +39,25 @@ export function Footer() {
             </span>
           </Link>
           <p className="max-w-md text-sm text-emerald-200/80">
-            Empowering Through Knowledge, Literature &amp; Culture
+            {tagline}
           </p>
           <div className="flex items-center gap-3 pt-2">
             <Link
-              href="#"
+              href={fbHref}
               aria-label="Facebook"
               className="flex size-9 items-center justify-center rounded-full bg-white/5 text-emerald-200 transition-colors hover:bg-primary hover:text-primary-foreground"
             >
               <FacebookIcon className="size-4" />
             </Link>
             <Link
-              href="#"
+              href={igHref}
               aria-label="Instagram"
               className="flex size-9 items-center justify-center rounded-full bg-white/5 text-emerald-200 transition-colors hover:bg-primary hover:text-primary-foreground"
             >
               <InstagramIcon className="size-4" />
             </Link>
             <Link
-              href="#"
+              href={waHref}
               aria-label="WhatsApp"
               className="flex size-9 items-center justify-center rounded-full bg-white/5 text-emerald-200 transition-colors hover:bg-primary hover:text-primary-foreground"
             >
@@ -79,15 +98,15 @@ export function Footer() {
           <ul className="space-y-2.5 text-sm text-emerald-200/80">
             <li className="flex items-start gap-2">
               <Phone className="mt-0.5 size-4 shrink-0" />
-              +91 1234 567 890
+              {phone}
             </li>
             <li className="flex items-start gap-2">
               <Mail className="mt-0.5 size-4 shrink-0" />
-              info@ssfmalappuramsahityotsav.in
+              {email}
             </li>
             <li className="flex items-start gap-2">
               <MapPin className="mt-0.5 size-4 shrink-0" />
-              Malappuram, Kerala, India
+              {address}
             </li>
           </ul>
         </div>
@@ -99,7 +118,7 @@ export function Footer() {
               <Leaf className="size-5" />
             </span>
             <p className="text-sm text-emerald-200/80">
-              SSF Malappuram West Committee
+              {organization}
             </p>
           </div>
         </div>

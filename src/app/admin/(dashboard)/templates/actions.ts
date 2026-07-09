@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/admin-auth";
 
@@ -21,6 +22,7 @@ const templateSchema = z.object({
   accentColor: hexColor,
   textColor: hexColor,
   customCss: z.string().optional(),
+  layout: z.string().optional(),
 });
 
 function emptyToUndefined(value: FormDataEntryValue | null) {
@@ -47,6 +49,7 @@ export async function createTemplate(
     accentColor: emptyToUndefined(formData.get("accentColor")),
     textColor: emptyToUndefined(formData.get("textColor")),
     customCss: emptyToUndefined(formData.get("customCss")),
+    layout: emptyToUndefined(formData.get("layout")),
   });
 
   if (!parsed.success) return { error: parsed.error.issues[0].message };
@@ -58,10 +61,11 @@ export async function createTemplate(
       accentColor: parsed.data.accentColor || null,
       textColor: parsed.data.textColor || null,
       customCss: parsed.data.customCss || null,
+      layout: parsed.data.layout || null,
     },
   });
   revalidateAll();
-  return { success: true };
+  redirect("/admin/templates");
 }
 
 export async function updateTemplate(
@@ -79,6 +83,7 @@ export async function updateTemplate(
     accentColor: emptyToUndefined(formData.get("accentColor")),
     textColor: emptyToUndefined(formData.get("textColor")),
     customCss: emptyToUndefined(formData.get("customCss")),
+    layout: emptyToUndefined(formData.get("layout")),
   });
 
   if (!parsed.success) return { error: parsed.error.issues[0].message };
@@ -91,10 +96,11 @@ export async function updateTemplate(
       accentColor: parsed.data.accentColor || null,
       textColor: parsed.data.textColor || null,
       customCss: parsed.data.customCss || null,
+      layout: parsed.data.layout || null,
     },
   });
   revalidateAll();
-  return { success: true };
+  redirect("/admin/templates");
 }
 
 export async function deleteTemplate(id: string) {

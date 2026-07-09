@@ -3,6 +3,7 @@
 import type { CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 import type { getResultById } from "@/lib/queries";
+import { parsePosterLayout } from "@/components/admin/poster-drag-editor";
 
 export type ResultDetail = NonNullable<Awaited<ReturnType<typeof getResultById>>>;
 
@@ -292,4 +293,117 @@ export function resolveTemplateKey(name?: string | null): PosterTemplateKey {
     (t) => t.label.toLowerCase() === name?.toLowerCase()
   );
   return match?.key ?? "classic";
+}
+
+import { POSTER_BLOCKS, fontFamily as posterFontFamily, GOOGLE_FONTS_URL } from "@/components/admin/poster-drag-editor";
+import type { PosterBlockConfig } from "@/components/admin/poster-drag-editor";
+
+export function CustomLayoutPoster({ result }: { result: ResultDetail }) {
+  const layout = parsePosterLayout(result.template?.layout ?? null);
+  const bg = result.template?.backgroundImage;
+  const tc = result.template?.textColor ?? "#ffffff";
+  const primary = result.template?.primaryColor ?? "#16a34a";
+  const hasBg = Boolean(bg);
+
+  function blk(id: string): CSSProperties {
+    const b: PosterBlockConfig | undefined = layout[id];
+    const meta = POSTER_BLOCKS[id];
+    return {
+      position: "absolute",
+      left: `${b?.x ?? 50}%`,
+      top: `${b?.y ?? 50}%`,
+      transform: "translate(-50%,-50%)",
+      textAlign: b?.align ?? "center",
+      width: "88%",
+      display: b?.visible === false ? "none" : undefined,
+      fontSize: `${b?.fontSize ?? meta?.defaultFontSize ?? 0.85}em`,
+      fontFamily: posterFontFamily(b?.fontFamily),
+      fontWeight: b?.bold ? "bold" : undefined,
+      fontStyle: b?.italic ? "italic" : undefined,
+      color: b?.color ?? tc,
+      textShadow: hasBg ? "0 1px 4px rgba(0,0,0,0.7)" : "none",
+    };
+  }
+
+  const winners = [
+    result.firstPlaceName ? { name: result.firstPlaceName, div: result.division.name } : null,
+    result.secondPlaceName ? { name: result.secondPlaceName, div: result.secondPlaceDivision?.name ?? result.division.name } : null,
+    result.thirdPlaceName ? { name: result.thirdPlaceName, div: result.thirdPlaceDivision?.name ?? result.division.name } : null,
+  ].filter(Boolean) as { name: string; div: string }[];
+
+  const customIds = Object.keys(layout).filter(id => !POSTER_BLOCKS[id]);
+
+  return (
+    <div
+      className={getPosterClassName(result.template)}
+      style={{
+        position: "relative",
+        width: "100%",
+        aspectRatio: "3/4",
+        overflow: "hidden",
+        fontSize: "1.5vw",
+        background: hasBg ? "transparent" : `linear-gradient(135deg, ${primary}, ${result.template?.accentColor ?? primary})`,
+        ...getPosterStyle(result.template),
+      }}
+    >
+      <style>{`@import url('${GOOGLE_FONTS_URL}');`}</style>
+      <PosterCustomCss template={result.template} />
+      {hasBg && (
+        <>
+          <img src={bg!} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }} />
+          <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 1 }} />
+        </>
+      )}
+
+      <div style={{ position: "absolute", inset: 0, zIndex: 2 }}>
+        <div style={blk("orgName")}>
+          <p style={{ letterSpacing: "0.3em", textTransform: "uppercase" }}>
+            {layout.orgName?.text ?? "SSF Malappuram West"}
+          </p>
+        </div>
+        <div style={blk("eventTitle")}>
+          <p style={{ letterSpacing: "0.08em" }}>{layout.eventTitle?.text ?? "SAHITYOTSAV 2026"}</p>
+          <div style={{ width: "40%", height: "1px", margin: "0.4em auto 0", background: `linear-gradient(to right,transparent,${layout.eventTitle?.color ?? tc}80,transparent)` }} />
+        </div>
+        <div style={blk("itemName")}>
+          <p>{result.item.name}</p>
+        </div>
+        <div style={blk("category")}>
+          <p style={{ textTransform: "uppercase", letterSpacing: "0.2em", opacity: 0.8 }}>{result.category.name}</p>
+        </div>
+        {winners[0] && (
+          <>
+            <div style={blk("firstPlace")}><p>{winners[0].name}</p></div>
+            <div style={blk("firstTeam")}><p style={{ opacity: 0.75 }}>{winners[0].div}</p></div>
+          </>
+        )}
+        {winners[1] && (
+          <>
+            <div style={blk("secondPlace")}><p>{winners[1].name}</p></div>
+            <div style={blk("secondTeam")}><p style={{ opacity: 0.75 }}>{winners[1].div}</p></div>
+          </>
+        )}
+        {winners[2] && (
+          <>
+            <div style={blk("thirdPlace")}><p>{winners[2].name}</p></div>
+            <div style={blk("thirdTeam")}><p style={{ opacity: 0.75 }}>{winners[2].div}</p></div>
+          </>
+        )}
+        <div style={blk("date")}>
+          <p style={{ opacity: 0.65 }}>
+            {result.publishedDate ? new Date(result.publishedDate).toLocaleDateString("en-IN", { month: "long", year: "numeric" }) : ""}
+          </p>
+        </div>
+        {customIds.map(id => {
+          const b = layout[id];
+          if (!b?.visible || !b.text) return null;
+          return (
+            <div key={id} style={blk(id)}>
+              <p>{b.text}</p>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 }

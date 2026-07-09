@@ -1,7 +1,10 @@
 import Image from "next/image";
+import Link from "next/link";
+import { Plus, Pencil } from "lucide-react";
 import { getPosterTemplates } from "@/lib/queries";
 import { Card, CardContent } from "@/components/ui/card";
-import { TemplateDialog } from "./template-dialog";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { deleteTemplate } from "./actions";
 
@@ -19,11 +22,13 @@ export default async function AdminTemplatesPage() {
           <h1 className="text-2xl font-bold tracking-tight">Poster Templates</h1>
           <p className="text-sm text-muted-foreground">
             Manage poster templates used for result posters. Use names like
-            Classic, Modern, Minimal, Festive or Bold to match the built-in
-            layouts.
+            Classic, Modern, Minimal, Festive or Bold to match the built-in layouts.
           </p>
         </div>
-        <TemplateDialog />
+        <Link href="/admin/templates/new" className={cn(buttonVariants({ size: "sm" }), "gap-1.5")}>
+          <Plus className="size-4" />
+          Add Template
+        </Link>
       </div>
 
       {templates.length === 0 ? (
@@ -46,18 +51,9 @@ export default async function AdminTemplatesPage() {
                 <div className="flex items-center justify-between">
                   <h3 className="font-semibold">{template.name}</h3>
                   <div className="flex items-center gap-1">
-                    <TemplateDialog
-                      template={{
-                        id: template.id,
-                        name: template.name,
-                        thumbnail: template.thumbnail,
-                        backgroundImage: template.backgroundImage,
-                        primaryColor: template.primaryColor,
-                        accentColor: template.accentColor,
-                        textColor: template.textColor,
-                        customCss: template.customCss,
-                      }}
-                    />
+                    <Link href={`/admin/templates/${template.id}`} className={cn(buttonVariants({ variant: "ghost", size: "icon-sm" }))}>
+                      <Pencil className="size-4" />
+                    </Link>
                     <DeleteButton
                       action={deleteTemplate.bind(null, template.id)}
                       confirmMessage={`Delete template "${template.name}"?`}

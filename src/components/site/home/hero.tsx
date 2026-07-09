@@ -1,11 +1,23 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getGallery } from "@/lib/queries";
+import { getGallery, getEventSettings } from "@/lib/queries";
 import { Button } from "@/components/ui/button";
 import { Trophy, BarChart3 } from "lucide-react";
 
+const D = {
+  badge: "West Sahityotsav 2026",
+  title: "SSF Malappuram West",
+  highlight: "Sahityotsav 2026",
+  description:
+    "A platform for young minds to express, compete and excel in literature and culture. 10 divisions, 5 categories, 90+ items and 2000+ participants competing for district glory.",
+};
+
 export async function Hero() {
-  const [heroImage] = await getGallery(1);
+  const [[heroImage], settings] = await Promise.all([getGallery(1), getEventSettings()]);
+  const badge = settings?.heroBadge || D.badge;
+  const title = settings?.heroTitle || D.title;
+  const highlight = settings?.heroHighlight || D.highlight;
+  const description = settings?.heroDescription || D.description;
 
   return (
     <section className="relative isolate overflow-hidden bg-emerald-950">
@@ -28,16 +40,14 @@ export async function Hero() {
         <div className="max-w-2xl animate-in fade-in slide-in-from-bottom-6 duration-700">
           <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1.5 text-sm font-medium text-emerald-200">
             <Trophy className="size-4" />
-            West Sahityotsav 2026
+            {badge}
           </span>
           <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
-            SSF Malappuram West{" "}
-            <span className="text-amber-400">Sahityotsav 2026</span>
+            {title}{" "}
+            <span className="text-amber-400">{highlight}</span>
           </h1>
           <p className="mt-6 text-lg text-emerald-100/80">
-            A platform for young minds to express, compete and excel in
-            literature and culture. 10 divisions, 5 categories, 90+ items
-            and 2000+ participants competing for district glory.
+            {description}
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
             <Button

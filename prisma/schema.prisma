@@ -145,6 +145,7 @@ model PosterTemplate {
   accentColor     String?
   textColor       String?
   customCss       String?  @db.Text
+  layout          String?  @db.Text
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -237,6 +238,33 @@ model EventSettings {
   updatedAt           DateTime @updatedAt
 
   @@map("event_settings")
+}
+
+model CertificateSettings {
+  id        String   @id @default("singleton")
+  // Backgrounds
+  firstBg   String?
+  secondBg  String?
+  thirdBg   String?
+  // Per-position styles
+  firstTextColor  String?  // e.g. "#ffffff"
+  firstOverlay    Float?   // 0.0 - 1.0
+  firstFont       String?  // serif | sans | script
+  secondTextColor String?
+  secondOverlay   Float?
+  secondFont      String?
+  thirdTextColor  String?
+  thirdOverlay    Float?
+  thirdFont       String?
+  firstCustomCss  String?  @db.Text
+  secondCustomCss String?  @db.Text
+  thirdCustomCss  String?  @db.Text
+  firstLayout     String?  @db.Text
+  secondLayout    String?  @db.Text
+  thirdLayout     String?  @db.Text
+  updatedAt DateTime @updatedAt
+
+  @@map("certificate_settings")
 }
 
 model Schedule {

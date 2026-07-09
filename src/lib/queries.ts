@@ -290,6 +290,37 @@ export async function upsertEventSettings(data: {
   });
 }
 
+export async function getCertificateSettings() {
+  return prisma.certificateSettings.findUnique({ where: { id: "singleton" } });
+}
+
+export async function upsertCertificateSettings(data: {
+  firstBg?: string | null;
+  secondBg?: string | null;
+  thirdBg?: string | null;
+  firstTextColor?: string | null;
+  firstOverlay?: number | null;
+  firstFont?: string | null;
+  secondTextColor?: string | null;
+  secondOverlay?: number | null;
+  secondFont?: string | null;
+  thirdTextColor?: string | null;
+  thirdOverlay?: number | null;
+  thirdFont?: string | null;
+  firstCustomCss?: string | null;
+  secondCustomCss?: string | null;
+  thirdCustomCss?: string | null;
+  firstLayout?: string | null;
+  secondLayout?: string | null;
+  thirdLayout?: string | null;
+}) {
+  return prisma.certificateSettings.upsert({
+    where: { id: "singleton" },
+    update: data,
+    create: { id: "singleton", ...data },
+  });
+}
+
 export async function getDashboardStats() {
   const [
     divisions,
