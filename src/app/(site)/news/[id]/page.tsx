@@ -4,8 +4,8 @@ import Link from "next/link";
 import { getAnnouncementById, getAnnouncements } from "@/lib/queries";
 import { PageBanner } from "@/components/site/page-banner";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, CalendarDays, Newspaper } from "lucide-react";
-import { format } from "date-fns";
+import { ArrowLeft, CalendarDays, Newspaper, Clock } from "lucide-react";
+import { format, formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 
 const priorityStyles: Record<string, string> = {
@@ -40,6 +40,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
   if (!item) notFound();
 
   const others = related.filter((r) => r.id !== item.id).slice(0, 3);
+  const content = item.body || item.description;
 
   return (
     <>
@@ -53,8 +54,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
         imageUrl={item.imageUrl}
       />
 
-      <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
-        {/* Back */}
+      <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
         <Link
           href="/news"
           className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
@@ -63,11 +63,10 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
           Back to News
         </Link>
 
-        {/* Article card */}
         <article className="overflow-hidden rounded-3xl border bg-card shadow-sm">
           {/* Cover image */}
           {item.imageUrl ? (
-            <div className="relative h-64 w-full sm:h-80 lg:h-96">
+            <div className="relative h-64 w-full sm:h-80 lg:h-[420px]">
               <Image
                 src={item.imageUrl}
                 alt={item.title}
@@ -75,35 +74,52 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
                 className="object-cover"
                 priority
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
             </div>
           ) : (
-            <div className="flex h-40 items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
-              <Newspaper className="size-16 text-primary/30" />
+            <div className="flex h-36 items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5">
+              <Newspaper className="size-14 text-primary/20" />
             </div>
           )}
 
           <div className="p-6 sm:p-10">
-            {/* Meta */}
-            <div className="mb-6 flex flex-wrap items-center gap-3">
-              <Badge variant="outline" className={cn("text-sm px-3 py-1", priorityStyles[item.priority])}>
+            {/* Meta row */}
+            <div className="mb-6 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+              <Badge variant="outline" className={cn("px-3 py-1 text-xs font-semibold", priorityStyles[item.priority])}>
                 {priorityLabel[item.priority]}
               </Badge>
-              <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                <CalendarDays className="size-4" />
+              <span className="flex items-center gap-1.5">
+                <CalendarDays className="size-3.5" />
                 {format(item.createdAt, "EEEE, dd MMMM yyyy")}
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Clock className="size-3.5" />
+                {formatDistanceToNow(item.createdAt, { addSuffix: true })}
               </span>
             </div>
 
             {/* Title */}
-            <h1 className="mb-6 text-2xl font-extrabold tracking-tight sm:text-3xl">
+            <h1 className="mb-4 text-2xl font-extrabold tracking-tight sm:text-3xl lg:text-4xl">
               {item.title}
             </h1>
 
-            {/* Body */}
-            <div className="prose prose-lg dark:prose-invert max-w-none">
-              {item.description.split("\n").map((para, i) =>
-                para.trim() ? <p key={i}>{para}</p> : <br key={i} />
+            {/* Short description as lead paragraph */}
+            {item.body && (
+              <p className="mb-8 text-lg font-medium leading-relaxed text-muted-foreground border-l-4 border-primary/30 pl-4">
+                {item.description}
+              </p>
+            )}
+
+            {/* Full body */}
+            <div className="prose prose-base dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-primary">
+              {content.split("\n").map((para, i) =>
+                para.trim() ? (
+                  <p key={i} className="mb-4 leading-relaxed text-foreground/90">
+                    {para}
+                  </p>
+                ) : (
+                  <div key={i} className="h-2" />
+                )
               )}
             </div>
           </div>
@@ -112,7 +128,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
         {/* Related news */}
         {others.length > 0 && (
           <section className="mt-14">
-            <h2 className="mb-6 text-xl font-bold tracking-tight">More News</h2>
+            <h2 className="mb-5 text-xl font-bold tracking-tight">More News</h2>
             <div className="grid gap-4 sm:grid-cols-3">
               {others.map((other) => (
                 <Link
@@ -122,7 +138,12 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
                 >
                   {other.imageUrl ? (
                     <div className="relative h-32 w-full overflow-hidden">
-                      <Image src={other.imageUrl} alt={other.title} fill className="object-cover transition-transform duration-300 group-hover:scale-105" />
+                      <Image
+                        src={other.imageUrl}
+                        alt={other.title}
+                        fill
+                        className="object-cover transition-transform duration-300 group-hover:scale-105"
+                      />
                     </div>
                   ) : (
                     <div className="flex h-32 items-center justify-center bg-primary/5">
@@ -136,7 +157,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
                     <h3 className="text-sm font-semibold leading-snug group-hover:text-primary line-clamp-2">
                       {other.title}
                     </h3>
-                    <p className="mt-1 text-xs text-muted-foreground">
+                    <p className="mt-auto pt-2 text-xs text-muted-foreground">
                       {format(other.createdAt, "dd MMM yyyy")}
                     </p>
                   </div>

@@ -59,20 +59,18 @@ export function PosterView({
   shareSettings?: ShareSettings;
 }) {
   const posterRef = React.useRef<HTMLDivElement>(null);
-  const [templateKey, setTemplateKey] = React.useState<PosterTemplateKey>(
-    resolveTemplateKey(result.template?.name)
+  // Track selection by DB template id to avoid key collision when names don't match hardcoded keys
+  const [selectedId, setSelectedId] = React.useState<string>(
+    result.template?.id ?? templates[0]?.id ?? ""
   );
 
-  const templatesByKey = React.useMemo(() => {
-    const map = new Map<PosterTemplateKey, PosterTemplate>();
-    for (const template of templates) {
-      map.set(resolveTemplateKey(template.name), template);
-    }
-    return map;
-  }, [templates]);
+  const selectedTemplate = React.useMemo(
+    () => templates.find((t) => t.id === selectedId) ?? result.template,
+    [selectedId, templates, result.template]
+  );
 
+  const templateKey: PosterTemplateKey = resolveTemplateKey(selectedTemplate?.name);
   const PosterComponent = POSTER_COMPONENTS[templateKey];
-  const selectedTemplate = templatesByKey.get(templateKey) ?? result.template;
   const displayResult: ResultDetail = { ...result, template: selectedTemplate };
   const useCustomLayout = Boolean(selectedTemplate?.layout);
 
@@ -123,14 +121,14 @@ export function PosterView({
   };
 
   const defaultWhatsapp = [
-    `ðŸ† *${result.item.name}* â€” ${result.category.name}`,
-    `ðŸ“ *${SITE_NAME}*`,
+    `*${result.item.name}* - ${result.category.name}`,
+    `*${SITE_NAME}*`,
     ``,
-    `ðŸ¥‡ 1st: *${shareVars.winner1}*`,
-    result.secondPlaceName ? `ðŸ¥ˆ 2nd: *${result.secondPlaceName}*` : null,
-    result.thirdPlaceName ? `ðŸ¥‰ 3rd: *${result.thirdPlaceName}*` : null,
+    `* 1st: ${shareVars.winner1}`,
+    result.secondPlaceName ? `* 2nd: ${result.secondPlaceName}` : null,
+    result.thirdPlaceName ? `* 3rd: ${result.thirdPlaceName}` : null,
     ``,
-    `ðŸ”— View full result:\n${shareUrl}`,
+    `View result: ${shareUrl}`,
   ].filter(Boolean).join("\n");
 
   const shareText = shareSettings?.whatsappTemplate
@@ -152,20 +150,23 @@ export function PosterView({
         const { toPng } = await import("html-to-image");
         const dataUrl = await toPng(posterRef.current, { pixelRatio: 2 });
         const blob = await (await fetch(dataUrl)).blob();
-        const file = new File(
-          [blob],
-          `${result.item.name.replace(/\s+/g, "-").toLowerCase()}-result.png`,
-          { type: "image/png" }
-        );
+        const fileName = `${result.item.name.replace(/\s+/g, "-").toLowerCase()}-result.png`;
+        const file = new File([blob], fileName, { type: "image/png" });
+
         if (navigator.canShare?.({ files: [file] })) {
-          await navigator.share({
-            files: [file],
-            title: `${result.item.name} â€” ${SITE_NAME}`,
-            text: shareText,
-            url: shareUrl,
-          });
+          // Copy caption to clipboard first so user can paste it as WhatsApp caption
+          try { await navigator.clipboard.writeText(shareText); } catch {}
+          // Share image only — text in navigator.share causes WhatsApp to send two separate messages
+          await navigator.share({ files: [file] });
+          toast.success("Caption copied to clipboard — paste it as your WhatsApp caption");
           return;
         }
+
+        // Desktop: download image + open WhatsApp text link
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = fileName;
+        link.click();
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") return;
       }
@@ -185,7 +186,7 @@ export function PosterView({
 
   const handleShareInstagram = async () => {
     await navigator.clipboard.writeText(instagramText);
-    toast.success("Caption copied â€” paste it in your Instagram post or story");
+    toast.success("Caption copied — paste it in your Instagram post or story");
     window.open("https://www.instagram.com/", "_blank");
   };
 
@@ -215,7 +216,7 @@ export function PosterView({
           />
           <DialogContent className="max-w-lg p-2">
             <DialogTitle className="sr-only">
-              {result.item.name} â€” {result.category.name} poster
+              {result.item.name} — {result.category.name} poster
             </DialogTitle>
             <div className="aspect-[4/5] overflow-hidden rounded-xl">
               {useCustomLayout ? <CustomLayoutPoster result={displayResult} /> : <PosterComponent result={displayResult} />}
@@ -224,57 +225,59 @@ export function PosterView({
         </Dialog>
       </div>
 
-      {/* Template picker */}
-      <div>
-        <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Choose Style
-        </p>
-        <div className="grid grid-cols-5 gap-2">
-          {POSTER_TEMPLATES.map((template) => {
-            const templateData = templatesByKey.get(template.key);
-            const thumbnail = templateData?.thumbnail || templateData?.backgroundImage;
-            const active = templateKey === template.key;
-            return (
-              <button
-                key={template.key}
-                type="button"
-                onClick={() => setTemplateKey(template.key)}
-                className={cn(
-                  "group flex flex-col items-center gap-1.5 rounded-xl border-2 p-1.5 transition-all",
-                  active
-                    ? "border-primary shadow-sm shadow-primary/20"
-                    : "border-transparent hover:border-border"
-                )}
-              >
-                <span
+      {/* Template picker — only show templates that exist in the DB */}
+      {templates.length > 1 && (
+        <div>
+          <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Choose Style
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {templates.map((tmpl) => {
+              const key = resolveTemplateKey(tmpl.name);
+              const thumbnail = tmpl.thumbnail || tmpl.backgroundImage;
+              const active = selectedId === tmpl.id;
+              return (
+                <button
+                  key={tmpl.id}
+                  type="button"
+                  onClick={() => setSelectedId(tmpl.id)}
                   className={cn(
-                    "relative aspect-[4/5] w-full overflow-hidden rounded-lg",
-                    TEMPLATE_PREVIEW_CLASSNAMES[template.key]
+                    "group flex flex-col items-center gap-2 rounded-xl border-2 p-2 transition-all w-24",
+                    active
+                      ? "border-primary shadow-sm shadow-primary/20"
+                      : "border-transparent hover:border-border"
                   )}
                 >
-                  {thumbnail && (
-                    <NextImage
-                      src={thumbnail}
-                      alt=""
-                      fill
-                      sizes="80px"
-                      className="object-cover opacity-60"
-                    />
-                  )}
-                  {active && (
-                    <span className="absolute inset-0 flex items-center justify-center bg-primary/20">
-                      <span className="size-2 rounded-full bg-primary" />
-                    </span>
-                  )}
-                </span>
-                <span className={cn("text-[10px] font-semibold", active ? "text-primary" : "text-muted-foreground")}>
-                  {template.label}
-                </span>
-              </button>
-            );
-          })}
+                  <span
+                    className={cn(
+                      "relative aspect-[4/5] w-full overflow-hidden rounded-lg",
+                      TEMPLATE_PREVIEW_CLASSNAMES[key] ?? "bg-muted"
+                    )}
+                  >
+                    {thumbnail && (
+                      <NextImage
+                        src={thumbnail}
+                        alt=""
+                        fill
+                        sizes="80px"
+                        className="object-cover opacity-60"
+                      />
+                    )}
+                    {active && (
+                      <span className="absolute inset-0 flex items-center justify-center bg-primary/20">
+                        <span className="size-2 rounded-full bg-primary" />
+                      </span>
+                    )}
+                  </span>
+                  <span className={cn("text-[10px] font-semibold", active ? "text-primary" : "text-muted-foreground")}>
+                    {tmpl.name}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Download */}
       <div className="rounded-xl border bg-muted/30 p-4">

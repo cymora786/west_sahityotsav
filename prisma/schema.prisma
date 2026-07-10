@@ -209,6 +209,7 @@ model Announcement {
   id          String   @id @default(cuid())
   title       String
   description String
+  body        String?
   imageUrl    String?
   priority    Priority @default(NORMAL)
   createdAt   DateTime @default(now())

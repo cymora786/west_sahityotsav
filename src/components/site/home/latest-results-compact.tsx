@@ -1,7 +1,5 @@
 import Link from "next/link";
 import { getPublishedCompetitions } from "@/lib/sahityotsav-api";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Trophy, ArrowRight, Users, User } from "lucide-react";
 
 export async function LatestResultsCompact() {
@@ -12,38 +10,36 @@ export async function LatestResultsCompact() {
     .slice(0, 4);
 
   return (
-    <Card className="h-full">
-      <CardHeader className="flex-row items-center justify-between">
-        <CardTitle className="text-lg">Latest Results</CardTitle>
+    <div className="h-full rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md shadow-lg">
+      <div className="flex items-center justify-between px-5 pt-5 pb-3">
+        <h3 className="text-base font-bold text-white">Latest Results</h3>
         <Link
           href="/results"
-          className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+          className="inline-flex items-center gap-1 text-xs font-medium text-white/70 hover:text-white transition-colors"
         >
-          View All Results <ArrowRight className="size-3.5" />
+          View All <ArrowRight className="size-3" />
         </Link>
-      </CardHeader>
-      <CardContent>
+      </div>
+      <div className="px-5 pb-5">
         {latest.length === 0 ? (
-          <p className="py-8 text-center text-sm text-muted-foreground">
+          <p className="py-10 text-center text-sm text-white/60">
             Results will be published here soon.
           </p>
         ) : (
-          <ul className="space-y-3">
+          <ul className="space-y-1">
             {latest.map((comp) => (
               <li key={comp.id}>
                 <Link
                   href={`/results/${comp.id}`}
-                  className="flex items-start justify-between gap-3 rounded-lg p-2 transition-colors hover:bg-accent"
+                  className="flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-white/10"
                 >
-                  <div className="flex items-start gap-3">
-                    <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                      <Trophy className="size-4" />
+                  <div className="flex items-center gap-3">
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-amber-400/30 text-amber-300">
+                      <Trophy className="size-3.5" />
                     </span>
                     <div>
-                      <p className="text-sm font-semibold leading-tight">
-                        {comp.name}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-sm font-semibold leading-tight text-white">{comp.name}</p>
+                      <p className="text-xs text-white/55">
                         {comp.category} ·{" "}
                         {comp.type === "Group" ? (
                           <span className="inline-flex items-center gap-0.5"><Users className="size-3" /> Group</span>
@@ -53,15 +49,15 @@ export async function LatestResultsCompact() {
                       </p>
                     </div>
                   </div>
-                  <Badge variant="secondary" className="shrink-0 text-blue-600">
-                    Completed
-                  </Badge>
+                  <span className="shrink-0 rounded-full bg-emerald-400/20 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-300">
+                    Done
+                  </span>
                 </Link>
               </li>
             ))}
           </ul>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

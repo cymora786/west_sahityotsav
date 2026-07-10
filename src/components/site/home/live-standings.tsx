@@ -53,7 +53,7 @@ export async function LiveStandings() {
                   hasPoints && index < 3 ? MEDAL_STYLES[index] : "bg-white/10 text-white/70"
                 )}
               >
-                {hasPoints && index < 3 ? <Trophy className="size-3.5" /> : hasPoints ? index + 1 : "â€”"}
+                {hasPoints && index < 3 ? <Trophy className="size-3.5" /> : hasPoints ? index + 1 : "—"}
               </span>
               <div className="min-w-0 flex-1">
                 <div className="mb-1 flex items-center justify-between gap-2">

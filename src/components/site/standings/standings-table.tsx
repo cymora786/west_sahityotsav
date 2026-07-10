@@ -134,7 +134,7 @@ export function StandingsTable({ rows }: { rows: StandingRow[] }) {
                 <TableCell>
                   {!hasPoints ? (
                     <span className="flex size-8 items-center justify-center rounded-full bg-muted text-sm font-semibold text-muted-foreground">
-                      â€”
+                      —
                     </span>
                   ) : rankBadge ? (
                     <span className={cn("flex size-8 items-center justify-center rounded-full shadow-sm", rankBadge.className)}>
@@ -175,7 +175,7 @@ export function StandingsTable({ rows }: { rows: StandingRow[] }) {
                   {status ? (
                     <Badge className={status.className}>{status.label}</Badge>
                   ) : (
-                    <Badge variant="outline" className="text-muted-foreground">â€”</Badge>
+                    <Badge variant="outline" className="text-muted-foreground">—</Badge>
                   )}
                 </TableCell>
               </TableRow>

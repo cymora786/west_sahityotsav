@@ -55,13 +55,13 @@ export function Hero() {
           src="/images/background.svg"
           alt=""
           fill
-          className="object-cover opacity-50"
+          className="object-cover "
           priority
         />
       </motion.div>
 
       {/* Dark overlay */}
-      <div className="pointer-events-none absolute inset-0 bg-black/30" />
+     {/*  <div className="pointer-events-none absolute inset-0 bg-black/30" /> */}
 
       {/* Centered hero content */}
       <div className="relative mx-auto flex flex-1 max-w-7xl flex-col items-center justify-center px-4 pt-24 pb-28 sm:px-6 lg:px-8">

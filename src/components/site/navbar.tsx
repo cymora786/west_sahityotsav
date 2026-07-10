@@ -46,8 +46,7 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const isHome = pathname === "/";
-  const transparent = isHome && !scrolled;
+  const transparent = !scrolled;
 
   return (
     <header
@@ -154,6 +153,16 @@ export function Navbar() {
                     </Link>
                   );
                 })}
+                <div className="mt-3 border-t pt-3">
+                  <Link
+                    href="/participants"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2.5 rounded-full bg-[#2e6ab1] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#1d4e8f]"
+                  >
+                    <User className="size-4 shrink-0" />
+                    Participant Login
+                  </Link>
+                </div>
               </nav>
             </SheetContent>
           </Sheet>

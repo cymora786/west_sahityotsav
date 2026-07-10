@@ -85,8 +85,8 @@ export function WinnersTable({ result }: { result: ResultDetail }) {
       {(second || third) && (
         <div className="grid grid-cols-2 divide-x divide-white/10 border-t border-white/10">
           {[
-            { data: second, rank: "2nd Place", medal: "ðŸ¥ˆ" },
-            { data: third, rank: "3rd Place", medal: "ðŸ¥‰" },
+            { data: second, rank: "2nd Place", medal: "🥈" },
+            { data: third, rank: "3rd Place", medal: "🥉" },
           ].map(({ data, rank, medal }, i) =>
             data ? (
               <div key={i} className="flex flex-col items-center gap-1.5 px-3 py-4 text-center">
@@ -99,7 +99,7 @@ export function WinnersTable({ result }: { result: ResultDetail }) {
               </div>
             ) : (
               <div key={i} className="flex items-center justify-center px-3 py-4 text-xs text-white/30">
-                â€”
+                —
               </div>
             )
           )}

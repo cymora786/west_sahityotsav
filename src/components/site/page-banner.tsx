@@ -27,6 +27,14 @@ export function PageBanner({
   return (
     <section className="relative isolate overflow-hidden" style={{ background: "linear-gradient(135deg, #2e6ab1 0%, #1d4e8f 60%, #163b70 100%)" }}>
       <div className="absolute inset-0">
+        {/* Background SVG pattern — always visible */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/bg-pattern.svg"
+          alt=""
+          aria-hidden
+          className="absolute inset-0 h-full w-full object-cover opacity-40 pointer-events-none select-none"
+        />
         {imageUrl && (
           <Image
             src={imageUrl}
@@ -36,18 +44,10 @@ export function PageBanner({
             priority
           />
         )}
-        {/* SVG decorative background pattern */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/bg-pattern.svg"
-          alt=""
-          aria-hidden
-          className="absolute inset-0 h-full w-full object-cover opacity-10 mix-blend-luminosity pointer-events-none select-none"
-        />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#2e6ab1] via-[#2e6ab1]/90 to-[#163b70]/60" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#2e6ab1]/80 via-[#2e6ab1]/70 to-[#163b70]/60" />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 pt-24 pb-12 sm:px-6 sm:pt-28 sm:pb-16 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-4 pt-32 pb-16 sm:px-6 sm:pt-36 sm:pb-20 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <nav className="mb-3 flex items-center gap-1.5 text-sm text-white/50">

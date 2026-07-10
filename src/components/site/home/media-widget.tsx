@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, PlayCircle } from "lucide-react";
 
 export async function MediaWidget({ inline }: { inline?: boolean } = {}) {
-  const videos = await getMedia(inline ? 4 : 6);
+  const videos = await getMedia(inline ? 6 : 6);
 
   return (
     <section className={inline ? "" : "mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8"}>
@@ -29,7 +29,7 @@ export async function MediaWidget({ inline }: { inline?: boolean } = {}) {
           No videos yet.
         </div>
       ) : (
-        <div className="mt-6 grid gap-5 grid-cols-2">
+        <div className={`mt-6 grid gap-5 ${inline ? "grid-cols-2 sm:grid-cols-3" : "grid-cols-2"}`}>
           {videos.map((video) => (
             <a
               key={video.id}
