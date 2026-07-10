@@ -4,7 +4,10 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
-
+<meta
+  name="google-site-verification"
+  content="google-site-verification=qGKfk36s659uEVxdPgfVR4Ae8ILOrmf9vrT47PBNIu8"
+/>
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-outfit",
   subsets: ["latin"],
