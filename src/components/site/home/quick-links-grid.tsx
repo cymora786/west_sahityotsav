@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   Trophy,
   BarChart3,
-  CalendarDays,
   ImageIcon,
   Star,
   Megaphone,
@@ -21,12 +20,6 @@ const links = [
     label: "Division Standings",
     icon: BarChart3,
     className: "bg-blue-500/15 text-blue-600",
-  },
-  {
-    href: "/schedule",
-    label: "Items & Schedule",
-    icon: CalendarDays,
-    className: "bg-orange-500/15 text-orange-600",
   },
   {
     href: "/gallery",

@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Leaf, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
-import { FacebookIcon, InstagramIcon } from "@/components/site/social-icons";
-import { NAV_LINKS, SITE_NAME } from "@/lib/constants";
+import { Leaf, Mail, MapPin, Phone } from "lucide-react";
+import { FacebookIcon, InstagramIcon, YoutubeIcon, WhatsAppIcon } from "@/components/site/social-icons";
+import { NAV_LINKS, SITE_NAME, SOCIAL_LINKS } from "@/lib/constants";
 import { getEventSettings } from "@/lib/queries";
 
 const FIRST_COLUMN = NAV_LINKS.slice(0, 4);
@@ -42,26 +42,17 @@ export async function Footer() {
             {tagline}
           </p>
           <div className="flex items-center gap-3 pt-2">
-            <Link
-              href={fbHref}
-              aria-label="Facebook"
-              className="flex size-9 items-center justify-center rounded-full bg-white/5 text-emerald-200 transition-colors hover:bg-primary hover:text-primary-foreground"
-            >
-              <FacebookIcon className="size-4" />
-            </Link>
-            <Link
-              href={igHref}
-              aria-label="Instagram"
-              className="flex size-9 items-center justify-center rounded-full bg-white/5 text-emerald-200 transition-colors hover:bg-primary hover:text-primary-foreground"
-            >
+            <Link href={SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="flex size-9 items-center justify-center rounded-full bg-white/5 text-emerald-200 transition-colors hover:bg-primary hover:text-primary-foreground">
               <InstagramIcon className="size-4" />
             </Link>
-            <Link
-              href={waHref}
-              aria-label="WhatsApp"
-              className="flex size-9 items-center justify-center rounded-full bg-white/5 text-emerald-200 transition-colors hover:bg-primary hover:text-primary-foreground"
-            >
-              <MessageCircle className="size-4" />
+            <Link href={SOCIAL_LINKS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="flex size-9 items-center justify-center rounded-full bg-white/5 text-emerald-200 transition-colors hover:bg-primary hover:text-primary-foreground">
+              <FacebookIcon className="size-4" />
+            </Link>
+            <Link href={SOCIAL_LINKS.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="flex size-9 items-center justify-center rounded-full bg-white/5 text-emerald-200 transition-colors hover:bg-primary hover:text-primary-foreground">
+              <YoutubeIcon className="size-4" />
+            </Link>
+            <Link href={SOCIAL_LINKS.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp Channel" className="flex size-9 items-center justify-center rounded-full bg-white/5 text-emerald-200 transition-colors hover:bg-primary hover:text-primary-foreground">
+              <WhatsAppIcon className="size-4" />
             </Link>
           </div>
         </div>

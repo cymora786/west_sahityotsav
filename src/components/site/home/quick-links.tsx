@@ -2,7 +2,6 @@ import Link from "next/link";
 import {
   Trophy,
   ListChecks,
-  CalendarDays,
   ImageIcon,
   Megaphone,
   Layers,
@@ -12,7 +11,6 @@ const links = [
   { href: "/standings", label: "Standings", icon: Trophy },
   { href: "/results", label: "Results", icon: ListChecks },
   { href: "/categories", label: "Categories", icon: Layers },
-  { href: "/schedule", label: "Schedule", icon: CalendarDays },
   { href: "/gallery", label: "Gallery", icon: ImageIcon },
   { href: "/announcements", label: "Announcements", icon: Megaphone },
 ];

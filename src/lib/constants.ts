@@ -5,7 +5,6 @@ export const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/standings", label: "Standings" },
   { href: "/results", label: "Results" },
-  { href: "/schedule", label: "Schedule" },
   { href: "/gallery", label: "Gallery" },
   { href: "/announcements", label: "Announcements" },
   { href: "/participants", label: "My Details" },
@@ -20,9 +19,16 @@ export const CATEGORY_NAMES = [
 ] as const;
 
 export const EVENT_STATS = {
-  divisions: 10,
+  divisions: 12,
   categories: 5,
-  items: 90,
-  participants: 2000,
-  days: 3,
+  items: 175,
+  participants: 20000,
+  days: 4,
+};
+
+export const SOCIAL_LINKS = {
+  instagram: "https://www.instagram.com/ssfmlpwest/",
+  facebook: "https://www.facebook.com/ssfmlpmwest",
+  youtube: "https://www.youtube.com/@SSFMlpmWestMedia",
+  whatsapp: "https://whatsapp.com/channel/0029Va8oFSUHLHQcD3rqGm2O",
 };

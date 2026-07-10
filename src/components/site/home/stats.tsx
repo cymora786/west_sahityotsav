@@ -1,45 +1,31 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Building2, Layers, Trophy, Users, CalendarDays } from "lucide-react";
-import { getTeamPoints, getPublishedCompetitions, getApiSchedule } from "@/lib/sahityotsav-api";
+import { getPublishedCompetitions } from "@/lib/sahityotsav-api";
 import { EVENT_STATS } from "@/lib/constants";
 
 export async function Stats() {
-  const [teamPoints, competitions, schedule] = await Promise.all([
-    getTeamPoints(0),
-    getPublishedCompetitions(),
-    getApiSchedule(),
-  ]);
-
-  const divisions = teamPoints?.length ?? EVENT_STATS.divisions;
+  const competitions = await getPublishedCompetitions();
   const results = competitions?.length ?? 0;
-  const scheduleTotal = schedule?.schedule?.length ?? 0;
 
   const stats = [
     {
       label: "Divisions",
       sublabel: "Participating",
-      value: divisions,
+      value: EVENT_STATS.divisions,
       icon: Building2,
       className: "bg-emerald-500/15 text-emerald-600",
     },
     {
-      label: "Results",
-      sublabel: "Published",
-      value: results,
-      icon: Trophy,
-      className: "bg-purple-500/15 text-purple-600",
-    },
-    {
       label: "Competitions",
-      sublabel: "In Schedule",
-      value: scheduleTotal || `${EVENT_STATS.items}+`,
+      sublabel: "Events",
+      value: `${EVENT_STATS.items}+`,
       icon: Layers,
       className: "bg-blue-500/15 text-blue-600",
     },
     {
       label: "Participants",
       sublabel: "Taking Part",
-      value: `${EVENT_STATS.participants}+`,
+      value: `${EVENT_STATS.participants.toLocaleString()}+`,
       icon: Users,
       className: "bg-orange-500/15 text-orange-600",
     },
@@ -49,6 +35,13 @@ export async function Stats() {
       value: EVENT_STATS.days,
       icon: CalendarDays,
       className: "bg-pink-500/15 text-pink-600",
+    },
+    {
+      label: "Results",
+      sublabel: "Published",
+      value: results,
+      icon: Trophy,
+      className: "bg-purple-500/15 text-purple-600",
     },
   ];
 
