@@ -147,15 +147,18 @@ export function StandingsTable({ rows }: { rows: StandingRow[] }) {
                   )}
                 </TableCell>
                 <TableCell>
-                  <Link
-                    href={`/division/${row.slug}`}
-                    className={cn(
-                      "font-medium hover:text-primary",
-                      rank <= 3 && "font-bold"
-                    )}
-                  >
-                    {row.name}
-                  </Link>
+                  {row.points > 0 ? (
+                    <Link
+                      href={`/division/${row.slug}`}
+                      className={cn("font-medium hover:text-primary", rank <= 3 && "font-bold")}
+                    >
+                      {row.name}
+                    </Link>
+                  ) : (
+                    <span className={cn("font-medium text-muted-foreground", rank <= 3 && "font-bold")}>
+                      {row.name}
+                    </span>
+                  )}
                   <div className="mt-1.5 h-1.5 w-32 overflow-hidden rounded-full bg-muted sm:w-40">
                     <div
                       className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400"

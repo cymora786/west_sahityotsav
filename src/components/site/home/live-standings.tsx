@@ -53,12 +53,13 @@ export async function LiveStandings() {
               </span>
               <div className="min-w-0 flex-1">
                 <div className="mb-1 flex items-center justify-between gap-2">
-                  <Link
-                    href={`/division/${d.slug}`}
-                    className="truncate text-sm font-medium hover:underline"
-                  >
-                    {d.name}
-                  </Link>
+                  {d.points > 0 ? (
+                    <Link href={`/division/${d.slug}`} className="truncate text-sm font-medium hover:underline">
+                      {d.name}
+                    </Link>
+                  ) : (
+                    <span className="truncate text-sm font-medium text-white/70">{d.name}</span>
+                  )}
                   <span className="shrink-0 text-sm font-bold">
                     {d.points}{" "}
                     <span className="text-xs font-normal text-white/60">pts</span>
