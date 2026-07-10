@@ -10,7 +10,7 @@ const SECOND_COLUMN = NAV_LINKS.slice(4);
 
 const D = {
   tagline: "Empowering Through Knowledge, Literature & Culture",
-  phone: "+91 1234 567 890",
+  phone: "+91 ",
   email: "info@ssfmalappuramsahityotsav.in",
   address: "Malappuram, Kerala, India",
   organization: "SSF Malappuram West Committee",
