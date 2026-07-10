@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getApiCategoryLeaders } from "@/lib/sahityotsav-api";
+import { CATEGORY_NAMES } from "@/lib/constants";
 import { ArrowRight, Star } from "lucide-react";
 
 const CATEGORY_COLORS = [
@@ -14,8 +15,13 @@ const CATEGORY_COLORS = [
 
 export async function CategoryLeaders() {
   const leaders = await getApiCategoryLeaders();
+  const leadersMap = new Map(leaders.map((l) => [l.category, l]));
 
-  if (leaders.length === 0) return null;
+  const categories = CATEGORY_NAMES.map((name, i) => ({
+    name,
+    leader: leadersMap.get(name) ?? null,
+    colorClass: CATEGORY_COLORS[i % CATEGORY_COLORS.length],
+  }));
 
   return (
     <div className="h-full">
@@ -31,28 +37,28 @@ export async function CategoryLeaders() {
         </Link>
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {leaders.map(({ category, teamName, wins }, i) => (
-          <div key={category} className="rounded-2xl border bg-card p-5">
+        {categories.map(({ name, leader, colorClass }) => (
+          <div key={name} className="rounded-2xl border bg-card p-5">
             <div className="mb-3 flex items-center gap-3">
-              <div
-                className={`flex size-10 items-center justify-center rounded-xl ${
-                  CATEGORY_COLORS[i % CATEGORY_COLORS.length]
-                }`}
-              >
+              <div className={`flex size-10 items-center justify-center rounded-xl ${colorClass}`}>
                 <Star className="size-5" />
               </div>
               <div>
-                <h3 className="font-semibold">{category}</h3>
+                <h3 className="font-semibold">{name}</h3>
                 <p className="text-xs text-muted-foreground">Topper</p>
               </div>
             </div>
-            <p className="text-lg font-bold">{teamName}</p>
-            <p className="text-sm">
-              <span className="font-bold text-primary">{wins}</span>{" "}
-              <span className="text-muted-foreground">
-                first place{wins === 1 ? "" : "s"}
-              </span>
-            </p>
+            {leader ? (
+              <>
+                <p className="text-lg font-bold">{leader.teamName}</p>
+                <p className="text-sm">
+                  <span className="font-bold text-primary">{leader.wins}</span>{" "}
+                  <span className="text-muted-foreground">first place{leader.wins === 1 ? "" : "s"}</span>
+                </p>
+              </>
+            ) : (
+              <p className="text-sm text-muted-foreground italic">Results pending…</p>
+            )}
           </div>
         ))}
       </div>

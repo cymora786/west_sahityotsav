@@ -16,10 +16,13 @@ export async function LiveStandings() {
     getDivisionsList(),
   ]);
 
-  if (!apiPoints || apiPoints.length === 0) return null;
+  const pointsMap = new Map((apiPoints ?? []).map((e) => [e.name.toLowerCase(), e.point]));
 
-  const divisionMap = new Map(divisions.map((d) => [d.name.toLowerCase(), d]));
-  const maxPoints = Math.max(...apiPoints.map((t) => t.point), 1);
+  const rows = [...divisions]
+    .map((d) => ({ ...d, points: pointsMap.get(d.name.toLowerCase()) ?? 0 }))
+    .sort((a, b) => b.points - a.points);
+
+  const maxPoints = Math.max(...rows.map((r) => r.points), 1);
 
   return (
     <div className="h-full rounded-2xl bg-emerald-950 p-6 text-white">
@@ -36,31 +39,29 @@ export async function LiveStandings() {
       </div>
 
       <ul className="space-y-3">
-        {apiPoints.map((team, index) => {
-          const local = divisionMap.get(team.name.toLowerCase());
-          const slug = local?.slug ?? team.name.toLowerCase().replace(/\s+/g, "-");
-          const width = Math.max((team.point / maxPoints) * 100, 4);
+        {rows.map((d, index) => {
+          const width = Math.max(maxPoints > 0 ? (d.points / maxPoints) * 100 : 0, d.points > 0 ? 4 : 0);
           return (
-            <li key={team.name} className="flex items-center gap-3">
+            <li key={d.id} className="flex items-center gap-3">
               <span
                 className={cn(
                   "flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold",
-                  index < 3 ? MEDAL_STYLES[index] : "bg-white/10 text-white/70"
+                  index < 3 && d.points > 0 ? MEDAL_STYLES[index] : "bg-white/10 text-white/70"
                 )}
               >
-                {index < 3 ? <Trophy className="size-3.5" /> : index + 1}
+                {index < 3 && d.points > 0 ? <Trophy className="size-3.5" /> : index + 1}
               </span>
               <div className="min-w-0 flex-1">
                 <div className="mb-1 flex items-center justify-between gap-2">
                   <Link
-                    href={`/division/${slug}`}
+                    href={`/division/${d.slug}`}
                     className="truncate text-sm font-medium hover:underline"
                   >
-                    {team.name}
+                    {d.name}
                   </Link>
                   <span className="shrink-0 text-sm font-bold">
-                    {team.point}{" "}
-                    <span className="text-xs font-normal text-white/60">Points</span>
+                    {d.points}{" "}
+                    <span className="text-xs font-normal text-white/60">pts</span>
                   </span>
                 </div>
                 <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
