@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { getTeamPoints } from "@/lib/sahityotsav-api";
 import { getDivisionsList } from "@/lib/queries";
 import { ArrowRight, Trophy } from "lucide-react";
@@ -29,14 +29,14 @@ export async function LiveStandings() {
   const maxPoints = Math.max(...rows.map((r) => r.points), 1);
 
   return (
-    <div className="h-full rounded-2xl bg-emerald-950 p-6 text-white">
+    <div className="h-full rounded-2xl p-6 text-white" style={{ backgroundColor: "#2e6ab1" }}>
       <div className="mb-4 flex items-center justify-between gap-4">
         <h2 className="text-sm font-bold tracking-wide uppercase">
           Live Division Standings
         </h2>
         <Link
           href="/standings"
-          className="inline-flex items-center gap-1 text-sm font-medium text-emerald-200 hover:text-white"
+          className="inline-flex items-center gap-1 text-sm font-medium text-blue-200 hover:text-white"
         >
           View Full Standings <ArrowRight className="size-3.5" />
         </Link>
@@ -53,7 +53,7 @@ export async function LiveStandings() {
                   hasPoints && index < 3 ? MEDAL_STYLES[index] : "bg-white/10 text-white/70"
                 )}
               >
-                {hasPoints && index < 3 ? <Trophy className="size-3.5" /> : hasPoints ? index + 1 : "—"}
+                {hasPoints && index < 3 ? <Trophy className="size-3.5" /> : hasPoints ? index + 1 : "â€”"}
               </span>
               <div className="min-w-0 flex-1">
                 <div className="mb-1 flex items-center justify-between gap-2">
@@ -83,3 +83,4 @@ export async function LiveStandings() {
     </div>
   );
 }
+

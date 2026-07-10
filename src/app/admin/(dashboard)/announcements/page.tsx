@@ -56,6 +56,7 @@ export default async function AdminAnnouncementsPage() {
                       id: announcement.id,
                       title: announcement.title,
                       description: announcement.description,
+                      imageUrl: announcement.imageUrl ?? undefined,
                       priority: announcement.priority,
                     }}
                   />

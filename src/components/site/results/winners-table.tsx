@@ -1,9 +1,9 @@
-import { Trophy } from "lucide-react";
+﻿import { Trophy } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { ResultDetail } from "@/components/site/results/poster-templates";
 
 const CREST_PALETTES = [
-  "from-emerald-500 to-emerald-700",
+  "from-[#2e6ab1] to-[#1e4a80]",
   "from-blue-500 to-blue-700",
   "from-amber-500 to-amber-700",
   "from-rose-500 to-rose-700",
@@ -53,14 +53,14 @@ export function WinnersTable({ result }: { result: ResultDetail }) {
   if (!first && !second && !third) return null;
 
   return (
-    <div className="overflow-hidden rounded-2xl border bg-gradient-to-b from-emerald-950 to-emerald-900 text-white shadow-lg">
+    <div className="overflow-hidden rounded-2xl border bg-gradient-to-b from-[#2e6ab1] to-[#1d4e8f] text-white shadow-lg">
       {/* Match header */}
       <div className="flex items-center justify-between border-b border-white/10 px-5 py-3">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-300">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-blue-200">
           {result.category.name}
         </span>
         <span className="flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider">
-          <span className="size-1.5 rounded-full bg-emerald-400" />
+          <span className="size-1.5 rounded-full bg-[#2e6ab1]" />
           Full Time
         </span>
       </div>
@@ -74,7 +74,7 @@ export function WinnersTable({ result }: { result: ResultDetail }) {
             <Crest code={first.division?.code ?? first.division?.name ?? "?"} size="lg" />
           </div>
           <p className="relative z-10 mt-3 text-xl font-black leading-tight">{first.name}</p>
-          <p className="relative z-10 text-sm font-medium text-emerald-300">{first.division?.name}</p>
+          <p className="relative z-10 text-sm font-medium text-blue-200">{first.division?.name}</p>
           <span className="relative z-10 mt-2 rounded-full bg-amber-400/15 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-amber-400">
             1st Place
           </span>
@@ -85,8 +85,8 @@ export function WinnersTable({ result }: { result: ResultDetail }) {
       {(second || third) && (
         <div className="grid grid-cols-2 divide-x divide-white/10 border-t border-white/10">
           {[
-            { data: second, rank: "2nd Place", medal: "🥈" },
-            { data: third, rank: "3rd Place", medal: "🥉" },
+            { data: second, rank: "2nd Place", medal: "ðŸ¥ˆ" },
+            { data: third, rank: "3rd Place", medal: "ðŸ¥‰" },
           ].map(({ data, rank, medal }, i) =>
             data ? (
               <div key={i} className="flex flex-col items-center gap-1.5 px-3 py-4 text-center">
@@ -99,7 +99,7 @@ export function WinnersTable({ result }: { result: ResultDetail }) {
               </div>
             ) : (
               <div key={i} className="flex items-center justify-center px-3 py-4 text-xs text-white/30">
-                —
+                â€”
               </div>
             )
           )}
@@ -108,3 +108,4 @@ export function WinnersTable({ result }: { result: ResultDetail }) {
     </div>
   );
 }
+

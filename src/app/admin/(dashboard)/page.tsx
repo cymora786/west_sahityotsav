@@ -40,7 +40,7 @@ export default async function AdminDashboardPage() {
   const totalTeams = teams?.length ?? 0;
 
   const statCards = [
-    { label: "Teams / Divisions", value: totalTeams, icon: Trophy, href: "/admin/divisions", color: "bg-emerald-500/10 text-emerald-600" },
+    { label: "Teams / Divisions", value: totalTeams, icon: Trophy, href: "/admin/divisions", color: "bg-blue-500/10 text-blue-700" },
     { label: "Competitions", value: totalCompetitions, icon: ListChecks, href: "/admin/items", color: "bg-blue-500/10 text-blue-600" },
     { label: "Results Published", value: `${publishedResults}/${totalCompetitions}`, icon: CheckCircle2, href: "/admin/results", color: "bg-amber-500/10 text-amber-600" },
     { label: "Schedule Items", value: scheduleEntries.length, icon: CalendarDays, href: "/admin/schedule", color: "bg-violet-500/10 text-violet-600" },

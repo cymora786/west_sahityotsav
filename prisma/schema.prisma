@@ -209,11 +209,24 @@ model Announcement {
   id          String   @id @default(cuid())
   title       String
   description String
+  imageUrl    String?
   priority    Priority @default(NORMAL)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@map("announcements")
+}
+
+model Media {
+  id          String   @id @default(cuid())
+  title       String
+  videoId     String
+  year        Int
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("media")
 }
 
 model EventSettings {

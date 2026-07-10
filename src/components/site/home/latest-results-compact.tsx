@@ -53,7 +53,7 @@ export async function LatestResultsCompact() {
                       </p>
                     </div>
                   </div>
-                  <Badge variant="secondary" className="shrink-0 text-emerald-600">
+                  <Badge variant="secondary" className="shrink-0 text-blue-600">
                     Completed
                   </Badge>
                 </Link>

@@ -33,7 +33,7 @@ const COLOR_PALETTE = [
   "bg-blue-100 text-blue-600",
   "bg-amber-100 text-amber-600",
   "bg-rose-100 text-rose-600",
-  "bg-emerald-100 text-emerald-600",
+  "bg-blue-100 text-blue-700",
   "bg-cyan-100 text-cyan-600",
   "bg-fuchsia-100 text-fuchsia-600",
   "bg-orange-100 text-orange-600",

@@ -101,7 +101,7 @@ export type ApiCategoryLeader = {
 // ── Core endpoints ───────────────────────────────────────────────────────────
 
 export function getTeamPoints(limit = 0) {
-  return apiFetch<ApiTeamPoint[]>(`/api/public/team-points?limit=${limit}`);
+  return apiFetch<ApiTeamPoint[]>(`/api/public/team-points?limit=${limit}&teamTypeName=General`);
 }
 
 export function getPublishedCompetitions() {

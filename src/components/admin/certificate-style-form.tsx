@@ -295,7 +295,7 @@ export function CertificateStyleForm(props: Props) {
 
       <div className="flex items-center justify-end gap-3">
         {saved && (
-          <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400">
+          <p className="text-sm font-medium text-blue-600 dark:text-blue-400">
             ✓ Styles saved
           </p>
         )}

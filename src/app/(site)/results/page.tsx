@@ -10,7 +10,12 @@ export const metadata = {
     "Browse all published results for SSF Malappuram West Sahityotsav 2026.",
 };
 
-export default async function ResultsPage() {
+export default async function ResultsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string }>;
+}) {
+  const { q } = await searchParams;
   const [competitions, [bannerImage]] = await Promise.all([
     getPublishedCompetitions(),
     getGallery(1),
@@ -40,7 +45,7 @@ export default async function ResultsPage() {
         ]}
       />
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <ApiResultsGrid results={results} />
+        <ApiResultsGrid results={results} initialQuery={q ?? ""} />
       </div>
     </>
   );

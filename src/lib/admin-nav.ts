@@ -11,6 +11,7 @@ import {
   Share2,
   FileText,
   Award,
+  PlayCircle,
 } from "lucide-react";
 
 export const ADMIN_NAV_GROUPS = [
@@ -47,11 +48,8 @@ export const ADMIN_NAV_GROUPS = [
     title: "Content",
     items: [
       { href: "/admin/gallery", label: "Gallery", icon: ImageIcon },
-      {
-        href: "/admin/announcements",
-        label: "Announcements",
-        icon: Megaphone,
-      },
+      { href: "/admin/media", label: "Media (YouTube)", icon: PlayCircle },
+      { href: "/admin/announcements", label: "News", icon: Megaphone },
       { href: "/admin/schedule", label: "Schedule", icon: CalendarDays },
     ],
   },

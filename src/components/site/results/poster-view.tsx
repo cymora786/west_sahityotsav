@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import NextImage from "next/image";
@@ -31,11 +31,11 @@ import { cn } from "@/lib/utils";
 import type { getPosterTemplates } from "@/lib/queries";
 
 const TEMPLATE_PREVIEW_CLASSNAMES: Record<PosterTemplateKey, string> = {
-  classic: "bg-gradient-to-br from-emerald-100 to-emerald-300",
-  modern: "bg-gradient-to-br from-emerald-700 to-emerald-950",
+  classic: "bg-gradient-to-br from-blue-100 to-blue-300",
+  modern: "bg-gradient-to-br from-[#1d4e8f] to-[#2e6ab1]",
   minimal: "bg-gradient-to-br from-neutral-50 to-neutral-200 border",
-  festive: "bg-gradient-to-br from-amber-100 to-emerald-100",
-  bold: "bg-gradient-to-br from-emerald-600 to-slate-900",
+  festive: "bg-gradient-to-br from-amber-100 to-blue-100",
+  bold: "bg-gradient-to-br from-[#2e6ab1] to-slate-900",
 };
 
 type PosterTemplate = Awaited<ReturnType<typeof getPosterTemplates>>[number];
@@ -123,14 +123,14 @@ export function PosterView({
   };
 
   const defaultWhatsapp = [
-    `🏆 *${result.item.name}* — ${result.category.name}`,
-    `📍 *${SITE_NAME}*`,
+    `ðŸ† *${result.item.name}* â€” ${result.category.name}`,
+    `ðŸ“ *${SITE_NAME}*`,
     ``,
-    `🥇 1st: *${shareVars.winner1}*`,
-    result.secondPlaceName ? `🥈 2nd: *${result.secondPlaceName}*` : null,
-    result.thirdPlaceName ? `🥉 3rd: *${result.thirdPlaceName}*` : null,
+    `ðŸ¥‡ 1st: *${shareVars.winner1}*`,
+    result.secondPlaceName ? `ðŸ¥ˆ 2nd: *${result.secondPlaceName}*` : null,
+    result.thirdPlaceName ? `ðŸ¥‰ 3rd: *${result.thirdPlaceName}*` : null,
     ``,
-    `🔗 View full result:\n${shareUrl}`,
+    `ðŸ”— View full result:\n${shareUrl}`,
   ].filter(Boolean).join("\n");
 
   const shareText = shareSettings?.whatsappTemplate
@@ -160,7 +160,7 @@ export function PosterView({
         if (navigator.canShare?.({ files: [file] })) {
           await navigator.share({
             files: [file],
-            title: `${result.item.name} — ${SITE_NAME}`,
+            title: `${result.item.name} â€” ${SITE_NAME}`,
             text: shareText,
             url: shareUrl,
           });
@@ -185,7 +185,7 @@ export function PosterView({
 
   const handleShareInstagram = async () => {
     await navigator.clipboard.writeText(instagramText);
-    toast.success("Caption copied — paste it in your Instagram post or story");
+    toast.success("Caption copied â€” paste it in your Instagram post or story");
     window.open("https://www.instagram.com/", "_blank");
   };
 
@@ -215,7 +215,7 @@ export function PosterView({
           />
           <DialogContent className="max-w-lg p-2">
             <DialogTitle className="sr-only">
-              {result.item.name} — {result.category.name} poster
+              {result.item.name} â€” {result.category.name} poster
             </DialogTitle>
             <div className="aspect-[4/5] overflow-hidden rounded-xl">
               {useCustomLayout ? <CustomLayoutPoster result={displayResult} /> : <PosterComponent result={displayResult} />}
@@ -332,3 +332,4 @@ export function PosterView({
     </div>
   );
 }
+

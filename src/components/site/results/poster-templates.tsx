@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import type { CSSProperties } from "react";
 import { cn } from "@/lib/utils";
@@ -48,7 +48,7 @@ function PosterCustomCss({ template }: { template: TemplateStyle }) {
   return <style>{`.poster-${template.id} {\n${template.customCss}\n}`}</style>;
 }
 
-/** Winners list — colored bullet dots matching reference design */
+/** Winners list â€” colored bullet dots matching reference design */
 function WinnersList({
   result,
   dot1,
@@ -98,9 +98,9 @@ function WinnersList({
   );
 }
 
-/* ─────────────────────────────────────────────
-   Shared poster shell — background + content
-───────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   Shared poster shell â€” background + content
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function PosterShell({
   result,
   fallback,
@@ -139,7 +139,7 @@ function PosterShell({
     >
       <PosterCustomCss template={result.template} />
 
-      {/* Background — use CSS backgroundImage so html-to-image captures text layers correctly */}
+      {/* Background â€” use CSS backgroundImage so html-to-image captures text layers correctly */}
       {bg && (
         <div
           className="absolute inset-0"
@@ -149,7 +149,7 @@ function PosterShell({
         </div>
       )}
 
-      {/* Content — left-aligned, positioned in lower-left */}
+      {/* Content â€” left-aligned, positioned in lower-left */}
       <div className="relative z-10 flex h-full flex-col justify-end p-8 pb-10">
         {/* Category */}
         <p className={cn("mb-1 text-sm font-bold uppercase tracking-widest", categoryColor)}>
@@ -177,9 +177,9 @@ function PosterShell({
   );
 }
 
-/* ─────────────────────────────────────────────
-   CLASSIC  — amber/lime on warm bg
-───────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   CLASSIC  â€” amber/lime on warm bg
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 export function ClassicPoster({ result }: { result: ResultDetail }) {
   return (
     <PosterShell
@@ -197,14 +197,14 @@ export function ClassicPoster({ result }: { result: ResultDetail }) {
   );
 }
 
-/* ─────────────────────────────────────────────
-   MODERN  — cyan accent on dark bg
-───────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   MODERN  â€” cyan accent on dark bg
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 export function ModernPoster({ result }: { result: ResultDetail }) {
   return (
     <PosterShell
       result={result}
-      fallback="bg-gradient-to-b from-slate-900 via-emerald-950 to-slate-950"
+      fallback="bg-gradient-to-b from-slate-900 via-[#2e6ab1] to-slate-950"
       scrim="bg-gradient-to-r from-black/60 via-black/25 to-transparent"
       categoryColor="text-cyan-300/80"
       itemColor="text-cyan-300"
@@ -217,9 +217,9 @@ export function ModernPoster({ result }: { result: ResultDetail }) {
   );
 }
 
-/* ─────────────────────────────────────────────
-   MINIMAL  — white on light overlay
-───────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   MINIMAL  â€” white on light overlay
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 export function MinimalPoster({ result }: { result: ResultDetail }) {
   return (
     <PosterShell
@@ -237,9 +237,9 @@ export function MinimalPoster({ result }: { result: ResultDetail }) {
   );
 }
 
-/* ─────────────────────────────────────────────
-   FESTIVE  — gold/amber on warm bg
-───────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   FESTIVE  â€” gold/amber on warm bg
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 export function FestivePoster({ result }: { result: ResultDetail }) {
   return (
     <PosterShell
@@ -257,17 +257,17 @@ export function FestivePoster({ result }: { result: ResultDetail }) {
   );
 }
 
-/* ─────────────────────────────────────────────
-   BOLD  — bright green on dark bg
-───────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   BOLD  â€” bright green on dark bg
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 export function BoldPoster({ result }: { result: ResultDetail }) {
   return (
     <PosterShell
       result={result}
-      fallback="bg-gradient-to-b from-emerald-900 to-black"
+      fallback="bg-gradient-to-b from-[#1d4e8f] to-black"
       scrim="bg-gradient-to-r from-black/65 via-black/25 to-transparent"
-      categoryColor="text-emerald-400/80"
-      itemColor="text-emerald-400"
+      categoryColor="text-blue-300/80"
+      itemColor="text-blue-300"
       dot1="#4ade80"
       dot2="#16a34a"
       dot3="#064e3b"
@@ -407,3 +407,4 @@ export function CustomLayoutPoster({ result }: { result: ResultDetail }) {
     </div>
   );
 }
+

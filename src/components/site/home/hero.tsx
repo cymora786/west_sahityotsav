@@ -1,85 +1,251 @@
+"use client";
+
+import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { getGallery, getEventSettings } from "@/lib/queries";
-import { Button } from "@/components/ui/button";
-import { Trophy, BarChart3 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { Building2, Layers, Users, CalendarDays, Trophy, Search, ArrowRight, Radio, BarChart3, ImageIcon } from "lucide-react";
+import { EVENT_STATS } from "@/lib/constants";
 
-const D = {
-  badge: "West Sahityotsav 2026",
-  title: "SSF Malappuram West",
-  highlight: "Sahityotsav 2026",
-  description:
-    "A platform for young minds to express, compete and excel in literature and culture. 10 divisions, 5 categories, 90+ items and 2000+ participants competing for district glory.",
-};
+const CTA_BUTTONS = [
+  { label: "Live Results", href: "/results", icon: Radio },
+  { label: "Standings", href: "/standings", icon: BarChart3 },
+  { label: "Gallery", href: "/gallery", icon: ImageIcon },
+];
 
-export async function Hero() {
-  const [[heroImage], settings] = await Promise.all([getGallery(1), getEventSettings()]);
-  const badge = settings?.heroBadge || D.badge;
-  const title = settings?.heroTitle || D.title;
-  const highlight = settings?.heroHighlight || D.highlight;
-  const description = settings?.heroDescription || D.description;
+const STATS = [
+  { label: "Divisions", value: EVENT_STATS.divisions, icon: Building2 },
+  { label: "Competitions", value: `${EVENT_STATS.items}+`, icon: Layers },
+  { label: "Participants", value: `${EVENT_STATS.participants.toLocaleString()}+`, icon: Users },
+  { label: "Days", value: EVENT_STATS.days, icon: CalendarDays },
+  { label: "Categories", value: EVENT_STATS.categories, icon: Trophy },
+];
+
+const ease = [0.22, 1, 0.36, 1] as const;
+
+export function Hero() {
+  const router = useRouter();
+  const [query, setQuery] = React.useState("");
+  const [focused, setFocused] = React.useState(false);
+
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    if (query.trim()) router.push(`/results?q=${encodeURIComponent(query.trim())}`);
+    else router.push("/results");
+  }
 
   return (
-    <section className="relative isolate overflow-hidden bg-emerald-950">
-      <div className="absolute inset-0">
-        {heroImage && (
-          <Image
-            src={heroImage.imageUrl}
-            alt={heroImage.caption ?? "SSF Malappuram West Sahityotsav"}
-            fill
-            className="object-cover opacity-30"
-            priority
+    <section
+      className="relative isolate overflow-hidden flex flex-col"
+      style={{
+        background:
+          "linear-gradient(135deg, #3B4FD8 0%, #5B3FD8 40%, #7B2FD8 70%, #9B2FBF 100%)",
+        minHeight: "100dvh",
+      }}
+    >
+      {/* Background SVG */}
+      <motion.div
+        className="pointer-events-none absolute inset-0 origin-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.2 }}
+      >
+        <Image
+          src="/images/background.svg"
+          alt=""
+          fill
+          className="object-cover opacity-50"
+          priority
+        />
+      </motion.div>
+
+      {/* Dark overlay */}
+      <div className="pointer-events-none absolute inset-0 bg-black/30" />
+
+      {/* Centered hero content */}
+      <div className="relative mx-auto flex flex-1 max-w-7xl flex-col items-center justify-center px-4 pt-24 pb-28 sm:px-6 lg:px-8">
+
+        <div className="flex w-full flex-col items-center gap-10 lg:flex-row lg:items-center lg:gap-0">
+
+          {/* Left — Because WE are */}
+          <motion.div
+            className="flex flex-1 flex-col items-center text-center"
+            initial={{ opacity: 0, x: -60 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9, delay: 0.2, ease }}
+          >
+            <div className="hero-float-a will-change-transform">
+              <div className="hero-text-shimmer">
+                <Image
+                  src="/images/because-we-are.svg"
+                  alt="Because WE are"
+                  width={340}
+                  height={218}
+                  className="w-56 max-w-xs sm:w-72 lg:w-80 xl:w-[340px] drop-shadow-[0_8px_32px_rgba(255,255,255,0.15)]"
+                  priority
+                />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Vertical divider */}
+          <motion.div
+            className="hidden lg:block mx-10 xl:mx-16"
+            initial={{ opacity: 0, scaleY: 0 }}
+            animate={{ opacity: 1, scaleY: 1 }}
+            transition={{ duration: 0.7, delay: 0.5, ease }}
+            style={{ transformOrigin: "top" }}
+          >
+            <div className="h-52 w-px bg-white/40" />
+          </motion.div>
+
+          {/* Horizontal divider mobile */}
+          <motion.div
+            className="block w-3/4 h-px bg-white/30 lg:hidden"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.4 }}
           />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-950 via-emerald-950/90 to-emerald-900/70" />
-        <div className="absolute -top-24 -right-24 size-96 rounded-full bg-emerald-400/10 blur-3xl" />
-        <div className="absolute top-1/2 -left-24 size-72 rounded-full bg-amber-400/10 blur-3xl" />
+
+          {/* Right — sahi-2026-date */}
+          <motion.div
+            className="flex flex-1 flex-col items-center text-center"
+            initial={{ opacity: 0, x: 60 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.9, delay: 0.3, ease }}
+          >
+            <div className="hero-float-b will-change-transform">
+              <div className="hero-text-shimmer" style={{ animationDelay: "-1s" }}>
+                <Image
+                  src="/images/sahi-2026-date.svg"
+                  alt="Sahityotsav 2026 July 9-12 Edappal"
+                  width={520}
+                  height={193}
+                  className="w-72 max-w-sm sm:w-96 lg:w-[440px] xl:w-[520px] drop-shadow-[0_8px_32px_rgba(255,255,255,0.12)]"
+                  priority
+                />
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* CTA row */}
+        <motion.div
+          className="mt-10 flex flex-wrap justify-center gap-3"
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: {},
+            visible: { transition: { staggerChildren: 0.1, delayChildren: 0.75 } },
+          }}
+        >
+          {CTA_BUTTONS.map(({ label, href, icon: Icon }) => (
+            <motion.div
+              key={label}
+              variants={{
+                hidden: { opacity: 0, y: 24, scale: 0.9 },
+                visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease } },
+              }}
+            >
+              <Link
+                href={href}
+                className="flex items-center gap-2 rounded-full bg-[#ce416b] px-6 py-3 text-sm font-bold text-white shadow-md shadow-black/30 transition-all hover:scale-105 hover:bg-[#b83460] hover:shadow-lg"
+              >
+                <Icon className="size-4 shrink-0" />
+                {label}
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Search bar */}
+        <motion.div
+          className="mt-10 w-full max-w-xl"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 1.0, ease }}
+        >
+          <form onSubmit={handleSearch}>
+            <motion.div
+              animate={focused ? { scale: 1.03 } : { scale: 1 }}
+              transition={{ duration: 0.25 }}
+              className="relative flex items-center overflow-hidden rounded-2xl shadow-2xl shadow-black/40"
+            >
+              {/* Glow ring on focus */}
+              <AnimatePresence>
+                {focused && (
+                  <motion.div
+                    key="ring"
+                    className="pointer-events-none absolute inset-0 rounded-2xl"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    style={{ boxShadow: "0 0 0 3px rgba(200,255,255,0.35)" }}
+                  />
+                )}
+              </AnimatePresence>
+
+              <Search className="absolute left-4 size-5 text-white/60 z-10 pointer-events-none" />
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                placeholder="Search competitions, categories…"
+                className="w-full bg-white/15 py-4 pl-12 pr-36 text-white placeholder-white/50 backdrop-blur-md outline-none text-base"
+              />
+              <button
+                type="submit"
+                className="absolute right-2 flex items-center gap-1.5 rounded-xl bg-[#ce416b] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#b83460] hover:scale-105 active:scale-95"
+              >
+                Search <ArrowRight className="size-4" />
+              </button>
+            </motion.div>
+          </form>
+
+          {/* Quick links */}
+          <motion.div
+            className="mt-3 flex flex-wrap items-center gap-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.3, duration: 0.5 }}
+          >
+            <span className="text-xs text-white/50">Quick:</span>
+            {["Quran", "Speech", "Story Writing", "Debate"].map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => { setQuery(tag); router.push(`/results?q=${encodeURIComponent(tag)}`); }}
+                className="rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs text-white/80 backdrop-blur-sm transition-all hover:bg-white/20 hover:text-white"
+              >
+                {tag}
+              </button>
+            ))}
+          </motion.div>
+        </motion.div>
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8">
-        <div className="max-w-2xl animate-in fade-in slide-in-from-bottom-6 duration-700">
-          <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-4 py-1.5 text-sm font-medium text-emerald-200">
-            <Trophy className="size-4" />
-            {badge}
-          </span>
-          <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
-            {title}{" "}
-            <span className="text-amber-400">{highlight}</span>
-          </h1>
-          <p className="mt-6 text-lg text-emerald-100/80">
-            {description}
-          </p>
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <Button
-              size="lg"
-              className="rounded-full bg-gradient-to-r from-amber-400 to-orange-500 font-bold text-amber-950 shadow-lg shadow-amber-400/40 transition-transform hover:scale-105 hover:from-amber-300 hover:to-orange-400"
-              nativeButton={false}
-              render={
-                <Link href="/results">
-                  <span className="relative flex size-2.5">
-                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-500 opacity-75" />
-                    <span className="relative inline-flex size-2.5 rounded-full bg-red-600" />
-                  </span>
-                  Live Results
-                  <Trophy className="size-4" />
-                </Link>
-              }
-            />
-            <Button
-              size="lg"
-              variant="outline"
-              className="rounded-full border-emerald-400/40 bg-white/5 text-white hover:bg-white/10"
-              nativeButton={false}
-              render={
-                <Link href="/standings">
-                  <BarChart3 className="size-4" />
-                  Team Standings
-                </Link>
-              }
-            />
+      {/* Stats strip — pinned to bottom of banner */}
+      <motion.div
+        className="absolute bottom-0 left-0 right-0 border-t border-white/20 bg-black/25 backdrop-blur-sm"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, delay: 1.1, ease }}
+      >
+        <div className="mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-5 gap-2">
+            {STATS.map(({ label, value, icon: Icon }) => (
+              <div key={label} className="flex flex-col items-center gap-1 text-center text-white">
+                <Icon className="size-4 opacity-70" />
+                <p className="text-lg font-extrabold leading-none sm:text-2xl">{value}</p>
+                <p className="text-[10px] font-medium uppercase tracking-widest text-white/60 sm:text-xs">{label}</p>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }

@@ -1,9 +1,18 @@
-"use client";
+﻿"use client";
 
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, Leaf, Trophy } from "lucide-react";
+import {
+  Menu,
+  Home,
+  Trophy,
+  BarChart3,
+  ImageIcon,
+  PlayCircle,
+  Newspaper,
+  User,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,97 +23,137 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { NAV_LINKS, SITE_SHORT_NAME } from "@/lib/constants";
+import { SsfLogoMark } from "@/components/site/ssf-logo";
+
+const NAV_LINKS = [
+  { href: "/", label: "Home", icon: Home },
+  { href: "/results", label: "Results", icon: Trophy },
+  { href: "/standings", label: "Standings", icon: BarChart3 },
+  { href: "/gallery", label: "Gallery", icon: ImageIcon },
+  { href: "/media", label: "Media", icon: PlayCircle },
+  { href: "/news", label: "News", icon: Newspaper },
+];
 
 export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
+  const [scrolled, setScrolled] = React.useState(false);
+
+  React.useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const isHome = pathname === "/";
+  const transparent = isHome && !scrolled;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-3 font-bold">
-          <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-emerald-950 text-white">
-            <Leaf className="size-6" />
-          </span>
+    <header
+      className={cn(
+        "fixed top-0 z-50 w-full transition-all duration-300",
+        transparent
+          ? "border-b border-white/10 bg-transparent"
+          : "border-b bg-white/95 shadow-sm backdrop-blur-md dark:bg-background/95"
+      )}
+    >
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2.5 font-bold">
+          <SsfLogoMark className="h-10 w-auto shrink-0" white={transparent} />
           <span className="hidden leading-tight sm:block">
-            <span className="block text-base font-extrabold tracking-tight text-emerald-950 dark:text-foreground">
+            <span className={cn(
+              "block text-base font-extrabold tracking-tight transition-colors",
+              transparent ? "text-white" : "text-gray-900 dark:text-foreground"
+            )}>
               SSF Malappuram West
             </span>
-            <span className="block text-sm font-semibold text-primary">
-              {SITE_SHORT_NAME}
+            <span className={cn(
+              "block text-sm font-semibold transition-colors",
+              transparent ? "text-white/90" : "text-white"
+            )}>
+              Sahityotsav 2026
             </span>
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-1 xl:flex">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "relative rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground",
-                pathname === link.href &&
-                  "text-primary after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:rounded-full after:bg-primary"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
+        {/* Desktop nav */}
+        <nav className="hidden items-center gap-0.5 lg:flex">
+          {NAV_LINKS.map((link) => {
+            const Icon = link.icon;
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "relative flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors",
+                  transparent
+                    ? "text-white/80 hover:text-white"
+                    : "text-gray-600 hover:text-gray-900 dark:text-muted-foreground dark:hover:text-foreground",
+                  pathname === link.href &&
+                    cn(
+                      "after:absolute after:inset-x-3 after:-bottom-px after:h-0.5 after:rounded-full after:bg-[#ce416b]",
+                      transparent ? "text-white" : "text-gray-900 dark:text-foreground"
+                    )
+                )}
+              >
+                <Icon className="size-3.5 shrink-0" />
+                {link.label}
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-2">
+          {/* My Details / Participant login */}
+          <Link
+            href="/participants"
+            className={cn(
+              "hidden sm:inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-bold transition-all hover:scale-105",
+              transparent
+                ? "bg-white/20 text-white hover:bg-white/30 backdrop-blur-sm"
+                : "bg-[#2e6ab1] text-white shadow-md shadow-[#2e6ab1]/30 hover:bg-[#1d4e8f]"
+            )}
+          >
+            <User className="size-3.5" />
+            Participant Login
+          </Link>
           <ThemeToggle />
-          <Button
-            size="sm"
-            className="hidden rounded-full bg-gradient-to-r from-amber-400 to-orange-500 font-bold text-amber-950 shadow-md shadow-amber-500/40 transition-transform hover:scale-105 hover:from-amber-300 hover:to-orange-400 sm:inline-flex"
-            nativeButton={false}
-            render={
-              <Link href="/results">
-                <span className="relative flex size-2">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-red-500 opacity-75" />
-                  <span className="relative inline-flex size-2 rounded-full bg-red-600" />
-                </span>
-                Live Results
-              </Link>
-            }
-          />
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger
               render={
-                <Button variant="ghost" size="icon" className="xl:hidden">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={cn("lg:hidden", transparent && "text-white hover:bg-white/10")}
+                >
                   <Menu className="size-5" />
                 </Button>
               }
             />
-
             <SheetContent side="right" className="w-72">
               <SheetHeader>
-                <SheetTitle className="text-left text-primary">
-                  {SITE_SHORT_NAME}
-                </SheetTitle>
+                <SheetTitle className="text-left text-[#ce416b]">Sahityotsav 2026</SheetTitle>
               </SheetHeader>
               <nav className="flex flex-col gap-1 px-4">
-                {NAV_LINKS.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setOpen(false)}
-                    className={cn(
-                      "rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
-                      pathname === link.href && "bg-accent text-primary"
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-                <Link
-                  href="/admin"
-                  onClick={() => setOpen(false)}
-                  className="mt-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
-                >
-                  Admin Panel
-                </Link>
+                {NAV_LINKS.map((link) => {
+                  const Icon = link.icon;
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setOpen(false)}
+                      className={cn(
+                        "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+                        pathname === link.href && "bg-accent text-[#ce416b]"
+                      )}
+                    >
+                      <Icon className="size-4 shrink-0" />
+                      {link.label}
+                    </Link>
+                  );
+                })}
               </nav>
             </SheetContent>
           </Sheet>
@@ -113,3 +162,4 @@ export function Navbar() {
     </header>
   );
 }
+

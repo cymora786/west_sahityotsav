@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Search, User, Trophy, CheckCircle2, Clock, AlertCircle, Loader2, Medal, Users, Calendar } from "lucide-react";
+import { Search, User, Trophy, CheckCircle2, Clock, AlertCircle, Loader2, Medal, Users, Calendar, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -131,7 +131,7 @@ function ParticipantCard({ data, onReset }: { data: ApiParticipantDetails; onRes
 
   const overviewStats = [
     { label: "Total Competitions", value: competitionOverview.totalCompetitions, icon: Trophy, color: "text-blue-600" },
-    { label: "Completed", value: competitionOverview.completedCompetitions, icon: CheckCircle2, color: "text-emerald-600" },
+    { label: "Completed", value: competitionOverview.completedCompetitions, icon: CheckCircle2, color: "text-blue-600" },
     { label: "Prizes Won", value: competitionOverview.prizesWon, icon: Medal, color: "text-amber-600" },
     { label: "Prizes Pending Collection", value: competitionOverview.prizesPendingCollection, icon: Clock, color: "text-orange-600" },
   ];
@@ -226,6 +226,26 @@ function ParticipantCard({ data, onReset }: { data: ApiParticipantDetails; onRes
                         <span className="text-xs text-muted-foreground">{comp.stage}</span>
                       )}
                     </div>
+                    {comp.rank && comp.rank <= 3 && (
+                      <a
+                        href={`/certificate?${new URLSearchParams({
+                          name: participant.fullName,
+                          team: participant.teamName ?? "",
+                          item: comp.competitionName,
+                          cat: comp.category ?? "",
+                          stage: comp.stage ?? "",
+                          rank: String(comp.rank),
+                          grade: comp.grade ?? "",
+                          pts: String(comp.point ?? 0),
+                        }).toString()}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-200 px-3 py-1 text-xs font-semibold text-amber-800 hover:bg-amber-100 transition-colors dark:bg-amber-900/20 dark:border-amber-700 dark:text-amber-300 dark:hover:bg-amber-900/30"
+                      >
+                        <Download className="size-3" />
+                        Download Certificate
+                      </a>
+                    )}
                   </div>
                   <div className="shrink-0 text-right">
                     {comp.rank ? (

@@ -10,6 +10,7 @@ export type ActionState = { error?: string; success?: boolean };
 const announcementSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().min(1, "Description is required"),
+  imageUrl: z.string().url().optional().or(z.literal("")),
   priority: z.enum(["HIGH", "NORMAL", "LOW"]),
 });
 
@@ -28,12 +29,13 @@ export async function createAnnouncement(
   const parsed = announcementSchema.safeParse({
     title: formData.get("title"),
     description: formData.get("description"),
+    imageUrl: formData.get("imageUrl") || undefined,
     priority: formData.get("priority"),
   });
 
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
-  await prisma.announcement.create({ data: parsed.data });
+  await prisma.announcement.create({ data: { ...parsed.data, imageUrl: parsed.data.imageUrl || null } });
   revalidateAll();
   return { success: true };
 }
@@ -48,12 +50,13 @@ export async function updateAnnouncement(
   const parsed = announcementSchema.safeParse({
     title: formData.get("title"),
     description: formData.get("description"),
+    imageUrl: formData.get("imageUrl") || undefined,
     priority: formData.get("priority"),
   });
 
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
-  await prisma.announcement.update({ where: { id }, data: parsed.data });
+  await prisma.announcement.update({ where: { id }, data: { ...parsed.data, imageUrl: parsed.data.imageUrl || null } });
   revalidateAll();
   return { success: true };
 }

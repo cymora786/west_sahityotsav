@@ -5,7 +5,7 @@ const POINTS = [
   { label: "1st Place", value: 10, className: "bg-amber-400 text-amber-950" },
   { label: "2nd Place", value: 7, className: "bg-slate-300 text-slate-800" },
   { label: "3rd Place", value: 5, className: "bg-amber-700 text-amber-50" },
-  { label: "Participation", value: 2, className: "bg-emerald-500/15 text-emerald-700" },
+  { label: "Participation", value: 2, className: "bg-blue-500/15 text-blue-700" },
 ];
 
 export function PointsSystem() {

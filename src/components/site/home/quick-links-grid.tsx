@@ -13,7 +13,7 @@ const links = [
     href: "/results",
     label: "All Results",
     icon: Trophy,
-    className: "bg-emerald-500/15 text-emerald-600",
+    className: "bg-blue-500/15 text-blue-700",
   },
   {
     href: "/standings",

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import {
@@ -89,7 +89,7 @@ export function StandingsTable({ rows }: { rows: StandingRow[] }) {
 
   return (
     <div className="overflow-hidden rounded-2xl border shadow-sm">
-      <div className="flex items-center justify-between gap-4 bg-gradient-to-r from-emerald-950 to-emerald-900 px-5 py-4">
+      <div className="flex items-center justify-between gap-4 px-5 py-4" style={{ background: "linear-gradient(to right, #2e6ab1, #1d4e8f)" }}>
         <h2 className="flex items-center gap-2 text-sm font-bold tracking-wide text-white uppercase">
           <Trophy className="size-5 text-amber-400" />
           Overall Standings
@@ -134,7 +134,7 @@ export function StandingsTable({ rows }: { rows: StandingRow[] }) {
                 <TableCell>
                   {!hasPoints ? (
                     <span className="flex size-8 items-center justify-center rounded-full bg-muted text-sm font-semibold text-muted-foreground">
-                      —
+                      â€”
                     </span>
                   ) : rankBadge ? (
                     <span className={cn("flex size-8 items-center justify-center rounded-full shadow-sm", rankBadge.className)}>
@@ -161,7 +161,7 @@ export function StandingsTable({ rows }: { rows: StandingRow[] }) {
                   )}
                   <div className="mt-1.5 h-1.5 w-32 overflow-hidden rounded-full bg-muted sm:w-40">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400"
+                      className="h-full rounded-full bg-gradient-to-r from-[#2e6ab1] to-[#4a82c8]"
                       style={{
                         width: `${topScore > 0 ? (row.points / topScore) * 100 : 0}%`,
                       }}
@@ -175,7 +175,7 @@ export function StandingsTable({ rows }: { rows: StandingRow[] }) {
                   {status ? (
                     <Badge className={status.className}>{status.label}</Badge>
                   ) : (
-                    <Badge variant="outline" className="text-muted-foreground">—</Badge>
+                    <Badge variant="outline" className="text-muted-foreground">â€”</Badge>
                   )}
                 </TableCell>
               </TableRow>
@@ -186,3 +186,4 @@ export function StandingsTable({ rows }: { rows: StandingRow[] }) {
     </div>
   );
 }
+

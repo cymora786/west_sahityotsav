@@ -3,10 +3,11 @@ export const SITE_SHORT_NAME = "Sahityotsav 2026";
 
 export const NAV_LINKS = [
   { href: "/", label: "Home" },
-  { href: "/standings", label: "Standings" },
   { href: "/results", label: "Results" },
+  { href: "/standings", label: "Standings" },
   { href: "/gallery", label: "Gallery" },
-  { href: "/announcements", label: "Announcements" },
+  { href: "/media", label: "Media" },
+  { href: "/news", label: "News" },
   { href: "/participants", label: "My Details" },
 ] as const;
 

@@ -3,7 +3,7 @@ import { CATEGORY_NAMES } from "@/lib/constants";
 import { Crown } from "lucide-react";
 
 const CATEGORY_COLORS = [
-  "bg-emerald-500/15 text-emerald-600",
+  "bg-blue-500/15 text-blue-700",
   "bg-blue-500/15 text-blue-600",
   "bg-purple-500/15 text-purple-600",
   "bg-orange-500/15 text-orange-600",

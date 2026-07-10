@@ -34,6 +34,7 @@ type Announcement = {
   id: string;
   title: string;
   description: string;
+  imageUrl?: string;
   priority: Priority;
 };
 
@@ -100,6 +101,16 @@ export function AnnouncementDialog({
               placeholder="Announcement details"
               rows={4}
               required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="imageUrl">Image URL <span className="text-muted-foreground font-normal">(optional)</span></Label>
+            <Input
+              id="imageUrl"
+              name="imageUrl"
+              type="url"
+              defaultValue={announcement?.imageUrl}
+              placeholder="https://example.com/image.jpg"
             />
           </div>
           <div className="space-y-2">

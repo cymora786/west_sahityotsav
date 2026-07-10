@@ -248,6 +248,29 @@ export async function getAnnouncements(limit?: number) {
   });
 }
 
+export async function getAnnouncementById(id: string) {
+  return prisma.announcement.findUnique({ where: { id } });
+}
+
+export async function getMedia(limit?: number) {
+  return prisma.media.findMany({
+    orderBy: [{ year: "desc" }, { createdAt: "desc" }],
+    take: limit,
+  });
+}
+
+export async function getMediaByYear() {
+  const videos = await prisma.media.findMany({
+    orderBy: [{ year: "desc" }, { createdAt: "desc" }],
+  });
+  const byYear = new Map<number, typeof videos>();
+  for (const v of videos) {
+    if (!byYear.has(v.year)) byYear.set(v.year, []);
+    byYear.get(v.year)!.push(v);
+  }
+  return Array.from(byYear.entries()).map(([year, videos]) => ({ year, videos }));
+}
+
 export async function getSchedules() {
   return prisma.schedule.findMany({
     include: { category: true },

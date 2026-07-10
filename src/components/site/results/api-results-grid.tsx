@@ -8,8 +8,8 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Trophy, Search, Users, User } from "lucide-react";
 import type { ApiCompetition } from "@/lib/sahityotsav-api";
 
-export function ApiResultsGrid({ results }: { results: ApiCompetition[] }) {
-  const [query, setQuery] = React.useState("");
+export function ApiResultsGrid({ results, initialQuery = "" }: { results: ApiCompetition[]; initialQuery?: string }) {
+  const [query, setQuery] = React.useState(initialQuery);
 
   const filtered = results.filter((r) => {
     const q = query.toLowerCase();

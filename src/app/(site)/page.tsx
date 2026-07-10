@@ -1,21 +1,18 @@
 import { Hero } from "@/components/site/home/hero";
-import { Stats } from "@/components/site/home/stats";
 import { LiveStandings } from "@/components/site/home/live-standings";
 import { CategoryLeaders } from "@/components/site/home/category-leaders";
 import { ProgrammeProgress } from "@/components/site/home/programme-progress";
 import { LatestResultsCompact } from "@/components/site/home/latest-results-compact";
 import { QuickLinksGrid } from "@/components/site/home/quick-links-grid";
 import { GalleryPreview } from "@/components/site/home/gallery-preview";
-import { AnnouncementsWidget } from "@/components/site/home/announcements-widget";
+import { NewsWidget } from "@/components/site/home/news-widget";
+import { MediaWidget } from "@/components/site/home/media-widget";
 import { Reveal } from "@/components/site/reveal";
 
 export default function HomePage() {
   return (
     <>
       <Hero />
-      <Reveal>
-        <Stats />
-      </Reveal>
       <section className="mx-auto grid max-w-7xl gap-6 px-4 py-12 sm:px-6 lg:grid-cols-12 lg:px-8">
         <Reveal className="lg:col-span-5">
           <LiveStandings />
@@ -38,9 +35,16 @@ export default function HomePage() {
       <Reveal>
         <GalleryPreview />
       </Reveal>
-      <Reveal>
-        <AnnouncementsWidget />
-      </Reveal>
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 gap-6">
+          <Reveal>
+            <MediaWidget inline />
+          </Reveal>
+          <Reveal delay={100}>
+            <NewsWidget inline />
+          </Reveal>
+        </div>
+      </section>
     </>
   );
 }

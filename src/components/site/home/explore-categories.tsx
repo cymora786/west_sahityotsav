@@ -4,7 +4,7 @@ import { SectionHeading } from "@/components/site/section-heading";
 import { ArrowRight, GraduationCap } from "lucide-react";
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
-  Senior: "from-emerald-700 to-emerald-900",
+  Senior: "from-blue-700 to-blue-900",
   "Higher Secondary": "from-blue-600 to-blue-800",
   "High School": "from-purple-600 to-purple-800",
   Junior: "from-orange-500 to-orange-700",

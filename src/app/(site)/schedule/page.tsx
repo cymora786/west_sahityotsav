@@ -15,8 +15,8 @@ export const metadata = {
 const STATUS_CONFIG = {
   Completed: {
     icon: CheckCircle2,
-    className: "text-emerald-600 dark:text-emerald-400",
-    badge: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
+    className: "text-blue-600 dark:text-blue-400",
+    badge: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
   },
   "In Progress": {
     icon: Loader2,
