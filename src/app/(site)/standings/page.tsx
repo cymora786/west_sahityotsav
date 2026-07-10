@@ -3,7 +3,8 @@ import { getTeamPoints, getPublishedCompetitions } from "@/lib/sahityotsav-api";
 import { PageBanner } from "@/components/site/page-banner";
 import { StandingsTable } from "@/components/site/standings/standings-table";
 import { StandingsByCategory } from "@/components/site/standings/standings-by-category";
-import { Info, Trophy, Building2 } from "lucide-react";
+import { Trophy, Building2 } from "lucide-react";
+import { CelebrationEffect } from "@/components/site/standings/celebration-effect";
 
 export const metadata = {
   title: "Standings",
@@ -50,6 +51,7 @@ export default async function StandingsPage() {
 
   return (
     <>
+      <CelebrationEffect />
       <PageBanner
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "Standings" }]}
         title="Division Standings"
@@ -75,11 +77,6 @@ export default async function StandingsPage() {
 
         <div className="mt-12">
           <StandingsByCategory />
-        </div>
-
-        <div className="mt-8 flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-muted-foreground">
-          <Info className="size-4 shrink-0 text-primary" />
-          Click on a division name to view its detailed profile and results.
         </div>
       </section>
     </>

@@ -5,12 +5,12 @@ import { SectionHeading } from "@/components/site/section-heading";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ImageIcon } from "lucide-react";
 
-export async function GalleryPreview() {
-  const images = await getGallery(8);
+export async function GalleryPreview({ inline }: { inline?: boolean } = {}) {
+  const images = await getGallery(6);
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-      <div className="flex flex-wrap items-end justify-between gap-4">
+    <section className={inline ? "" : "mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8"}>
+      <div className="flex flex-wrap items-start justify-between gap-4">
         <SectionHeading
           eyebrow="Moments"
           title="Event Gallery"
@@ -34,7 +34,7 @@ export async function GalleryPreview() {
           Photos will appear here once uploaded.
         </div>
       ) : (
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="mt-6 grid grid-cols-3 gap-3">
           {images.map((image) => (
             <Link
               key={image.id}
