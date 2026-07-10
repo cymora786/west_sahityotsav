@@ -19,19 +19,18 @@ export default async function StandingsPage() {
     getGallery(1),
   ]);
 
-  const divisionMap = new Map(divisions.map((d) => [d.name.toLowerCase(), d]));
+  // Build a points lookup from the API
+  const pointsMap = new Map((apiPoints ?? []).map((e) => [e.name.toLowerCase(), e.point]));
 
-  const rows = (apiPoints ?? []).map((entry, i) => {
-    const local = divisionMap.get(entry.name.toLowerCase());
-    return {
-      id: local?.id ?? `api-${i}`,
-      name: entry.name,
-      code: local?.code ?? entry.name.slice(0, 3).toUpperCase(),
-      slug: local?.slug ?? entry.name.toLowerCase().replace(/\s+/g, "-"),
-      points: entry.point,
-      itemsParticipated: 0,
-    };
-  });
+  // Always show all local divisions; fill points from API (0 if not yet scored)
+  const rows = divisions.map((d) => ({
+    id: d.id,
+    name: d.name,
+    code: d.code,
+    slug: d.slug,
+    points: pointsMap.get(d.name.toLowerCase()) ?? 0,
+    itemsParticipated: 0,
+  }));
 
   const publishedCount = competitions?.length ?? 0;
 
