@@ -71,7 +71,7 @@ export function Navbar() {
             </span>
             <span className={cn(
               "block text-sm font-semibold transition-colors",
-              transparent ? "text-white/90" : "text-white"
+                transparent ? "text-white" : "text-gray-900 dark:text-foreground"
             )}>
               Sahityotsav 2026
             </span>
