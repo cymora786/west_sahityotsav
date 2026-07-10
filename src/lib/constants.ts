@@ -23,7 +23,7 @@ export const EVENT_STATS = {
   divisions: 12,
   categories: 5,
   items: 175,
-  participants: 20000,
+  participants: 2000,
   days: 4,
 };
 
