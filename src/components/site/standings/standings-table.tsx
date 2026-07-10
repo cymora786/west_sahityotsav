@@ -43,6 +43,7 @@ const RANK_ROW_TINTS = [
 
 export function StandingsTable({ rows }: { rows: StandingRow[] }) {
   const sorted = [...rows].sort((a, b) => b.points - a.points);
+  const hasPoints = sorted.some((r) => r.points > 0);
 
   const handleExportPdf = async () => {
     try {
@@ -125,19 +126,18 @@ export function StandingsTable({ rows }: { rows: StandingRow[] }) {
           )}
           {sorted.map((row, index) => {
             const rank = index + 1;
-            const status = STATUS_BADGES[rank - 1];
-            const rankBadge = RANK_BADGES[rank - 1];
-            const tint = RANK_ROW_TINTS[rank - 1];
+            const status = hasPoints ? STATUS_BADGES[rank - 1] : undefined;
+            const rankBadge = hasPoints ? RANK_BADGES[rank - 1] : undefined;
+            const tint = hasPoints ? RANK_ROW_TINTS[rank - 1] : undefined;
             return (
               <TableRow key={row.id} className={tint}>
                 <TableCell>
-                  {rankBadge ? (
-                    <span
-                      className={cn(
-                        "flex size-8 items-center justify-center rounded-full shadow-sm",
-                        rankBadge.className
-                      )}
-                    >
+                  {!hasPoints ? (
+                    <span className="flex size-8 items-center justify-center rounded-full bg-muted text-sm font-semibold text-muted-foreground">
+                      —
+                    </span>
+                  ) : rankBadge ? (
+                    <span className={cn("flex size-8 items-center justify-center rounded-full shadow-sm", rankBadge.className)}>
                       <rankBadge.icon className="size-4" />
                     </span>
                   ) : (
@@ -175,7 +175,7 @@ export function StandingsTable({ rows }: { rows: StandingRow[] }) {
                   {status ? (
                     <Badge className={status.className}>{status.label}</Badge>
                   ) : (
-                    <Badge variant="secondary">—</Badge>
+                    <Badge variant="outline" className="text-muted-foreground">—</Badge>
                   )}
                 </TableCell>
               </TableRow>

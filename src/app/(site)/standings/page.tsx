@@ -19,18 +19,32 @@ export default async function StandingsPage() {
     getGallery(1),
   ]);
 
-  // Build a points lookup from the API
-  const pointsMap = new Map((apiPoints ?? []).map((e) => [e.name.toLowerCase(), e.point]));
+  const localMap = new Map(divisions.map((d) => [d.name.toLowerCase(), d]));
 
-  // Always show all local divisions; fill points from API (0 if not yet scored)
-  const rows = divisions.map((d) => ({
-    id: d.id,
-    name: d.name,
-    code: d.code,
-    slug: d.slug,
-    points: pointsMap.get(d.name.toLowerCase()) ?? 0,
-    itemsParticipated: 0,
-  }));
+  // Use API team list as primary source; merge with local DB for slug/code
+  // Fall back to local DB list if API returns nothing
+  const teamList = apiPoints && apiPoints.length > 0
+    ? apiPoints.map((e, i) => {
+        const local = localMap.get(e.name.toLowerCase());
+        return {
+          id: local?.id ?? `api-${i}`,
+          name: e.name,
+          code: local?.code ?? e.name.slice(0, 3).toUpperCase(),
+          slug: local?.slug ?? e.name.toLowerCase().replace(/\s+/g, "-"),
+          points: e.point,
+          itemsParticipated: 0,
+        };
+      })
+    : divisions.map((d) => ({
+        id: d.id,
+        name: d.name,
+        code: d.code,
+        slug: d.slug,
+        points: 0,
+        itemsParticipated: 0,
+      }));
+
+  const rows = teamList;
 
   const publishedCount = competitions?.length ?? 0;
 

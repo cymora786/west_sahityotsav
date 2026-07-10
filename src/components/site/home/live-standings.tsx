@@ -16,12 +16,16 @@ export async function LiveStandings() {
     getDivisionsList(),
   ]);
 
-  const pointsMap = new Map((apiPoints ?? []).map((e) => [e.name.toLowerCase(), e.point]));
+  // Use API team list as primary; fall back to local DB
+  const teamRows = apiPoints && apiPoints.length > 0
+    ? apiPoints.map((e) => {
+        const local = divisions.find((d) => d.name.toLowerCase() === e.name.toLowerCase());
+        return { id: local?.id ?? e.name, name: e.name, slug: local?.slug ?? e.name.toLowerCase().replace(/\s+/g, "-"), points: e.point };
+      })
+    : divisions.map((d) => ({ id: d.id, name: d.name, slug: d.slug, points: 0 }));
 
-  const rows = [...divisions]
-    .map((d) => ({ ...d, points: pointsMap.get(d.name.toLowerCase()) ?? 0 }))
-    .sort((a, b) => b.points - a.points);
-
+  const rows = [...teamRows].sort((a, b) => b.points - a.points);
+  const hasPoints = rows.some((r) => r.points > 0);
   const maxPoints = Math.max(...rows.map((r) => r.points), 1);
 
   return (
@@ -46,10 +50,10 @@ export async function LiveStandings() {
               <span
                 className={cn(
                   "flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold",
-                  index < 3 && d.points > 0 ? MEDAL_STYLES[index] : "bg-white/10 text-white/70"
+                  hasPoints && index < 3 ? MEDAL_STYLES[index] : "bg-white/10 text-white/70"
                 )}
               >
-                {index < 3 && d.points > 0 ? <Trophy className="size-3.5" /> : index + 1}
+                {hasPoints && index < 3 ? <Trophy className="size-3.5" /> : hasPoints ? index + 1 : "—"}
               </span>
               <div className="min-w-0 flex-1">
                 <div className="mb-1 flex items-center justify-between gap-2">
