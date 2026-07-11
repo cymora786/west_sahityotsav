@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, MapPin, Medal, User, Users } from "lucide-react";
 import type { ResultDetail } from "@/components/site/results/poster-templates";
 import { ApiResultMiniCard } from "@/components/site/results/api-result-mini-card";
+import { ResultPopper } from "@/components/site/results/result-popper";
 
 export async function generateMetadata({
   params,
@@ -115,6 +116,7 @@ export default async function ResultDetailPage({
 
   return (
     <>
+      <ResultPopper />
       <PageBanner
         breadcrumbs={[
           { label: "Home", href: "/" },

@@ -1,14 +1,20 @@
-const BASE_URL = "https://sahityotsav.com";
+import { exec } from "child_process";
+import { promisify } from "util";
+
+const execAsync = promisify(exec);
+
+const BASE_URL = process.env.SAHITYOTSAV_BASE_URL ?? "https://demo.sahityotsav.com";
 const API_KEY = process.env.SAHITYOTSAV_API_KEY ?? "";
 
 async function apiFetch<T>(path: string): Promise<T | null> {
   try {
-    const res = await fetch(`${BASE_URL}${path}`, {
-      headers: { "x-api-key": API_KEY },
-      next: { revalidate: 60 },
-    });
-    if (!res.ok) return null;
-    const json = await res.json();
+    const url = `${BASE_URL}${path}`;
+    const { stdout } = await execAsync(
+      `curl -s --location -H "x-api-key: ${API_KEY}" "${url}"`,
+      { timeout: 15000 }
+    );
+    const json = JSON.parse(stdout);
+    if (!json || json.status === 401 || json.status === 403) return null;
     return json.data as T;
   } catch {
     return null;
