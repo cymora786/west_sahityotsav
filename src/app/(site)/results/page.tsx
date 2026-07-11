@@ -16,10 +16,11 @@ export default async function ResultsPage({
   searchParams: Promise<{ q?: string }>;
 }) {
   const { q } = await searchParams;
-  const [competitions, [bannerImage]] = await Promise.all([
+  const [competitions, galleryImages] = await Promise.all([
     getPublishedCompetitions(),
-    getGallery(1),
+    getGallery(1).catch(() => []),
   ]);
+  const [bannerImage] = galleryImages;
 
   const results = competitions ?? [];
 

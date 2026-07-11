@@ -48,14 +48,15 @@ export default async function ResultDetailPage({
 }) {
   const { id } = await params;
 
-  const [competitions, apiResults, templates, [bannerImage], shareSettings, competitionPoster] = await Promise.all([
+  const [competitions, apiResults, templates, galleryImages, shareSettings, competitionPoster] = await Promise.all([
     getPublishedCompetitions(),
     getCompetitionResults(id),
-    getPosterTemplates(),
-    getGallery(1),
-    getEventSettings(),
-    getCompetitionPoster(id),
+    getPosterTemplates().catch(() => []),
+    getGallery(1).catch(() => []),
+    getEventSettings().catch(() => null),
+    getCompetitionPoster(id).catch(() => null),
   ]);
+  const [bannerImage] = galleryImages;
 
   const comp = competitions?.find((c) => c.id === id);
   if (!comp || !apiResults) notFound();
