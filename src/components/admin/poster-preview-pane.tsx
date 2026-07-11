@@ -3,6 +3,8 @@
 import * as React from "react";
 import type { PosterLayout } from "./poster-drag-editor";
 import { POSTER_BLOCKS, fontFamily, GOOGLE_FONTS_URL } from "./poster-drag-editor";
+import { ClassicPoster } from "@/components/site/results/poster-templates";
+import type { ResultDetail } from "@/components/site/results/poster-templates";
 
 const SAMPLE = {
   orgName:     "SSF Malappuram West",
@@ -18,12 +20,36 @@ const SAMPLE = {
   date:        "January 2026",
 };
 
+function makeSampleResult(bgImage: string | null, primaryColor: string, accentColor: string, textColor: string): ResultDetail {
+  const now = new Date();
+  const template = bgImage ? {
+    id: "preview", name: "Preview", thumbnail: "", backgroundImage: bgImage,
+    primaryColor, accentColor, textColor, customCss: null,
+  } : null;
+  return {
+    id: "preview",
+    categoryId: "cat", itemId: "item",
+    divisionId: "Unit A", secondPlaceDivisionId: "Unit B", thirdPlaceDivisionId: "Unit C",
+    templateId: template?.id ?? null,
+    firstPlaceName: SAMPLE.firstPlace, secondPlaceName: SAMPLE.secondPlace, thirdPlaceName: SAMPLE.thirdPlace,
+    venue: null, status: "PUBLISHED", publishedDate: now, createdAt: now, updatedAt: now,
+    category: { id: "cat", name: SAMPLE.category, slug: "high-school", description: null, createdAt: now, updatedAt: now },
+    item: { id: "item", name: SAMPLE.itemName, categoryId: "cat", venue: null, status: "PUBLISHED", createdAt: now, updatedAt: now },
+    division: { id: "ua", name: SAMPLE.firstTeam, code: "UA", slug: "unit-a", createdAt: now, updatedAt: now },
+    secondPlaceDivision: { id: "ub", name: SAMPLE.secondTeam, code: "UB", slug: "unit-b", createdAt: now, updatedAt: now },
+    thirdPlaceDivision: { id: "uc", name: SAMPLE.thirdTeam, code: "UC", slug: "unit-c", createdAt: now, updatedAt: now },
+    template,
+    resultNumber: 7,
+  } as unknown as ResultDetail;
+}
+
 interface Props {
   layout: PosterLayout;
   bgImage: string | null;
   primaryColor?: string;
   accentColor?: string;
   textColor?: string;
+  templateName?: string;
 }
 
 export function PosterPreviewPane({
@@ -32,18 +58,32 @@ export function PosterPreviewPane({
   primaryColor = "#16a34a",
   accentColor = "#fde047",
   textColor = "#ffffff",
+  templateName = "",
 }: Props) {
+  const isClassic = templateName.trim().toLowerCase() === "classic";
+
+  if (isClassic) {
+    const sampleResult = makeSampleResult(bgImage, primaryColor, accentColor, textColor);
+    return (
+      <div className="relative w-full overflow-hidden rounded-xl border shadow-lg" style={{ aspectRatio: "3/4" }}>
+        <ClassicPoster result={sampleResult} />
+      </div>
+    );
+  }
+
   const hasBg = Boolean(bgImage);
 
   function blk(id: string): React.CSSProperties {
     const b = layout[id];
     const meta = POSTER_BLOCKS[id];
+    const align = b?.align ?? "center";
+    const xTranslate = align === "left" ? "0%" : align === "right" ? "-100%" : "-50%";
     return {
       position: "absolute",
       left: `${b?.x ?? 50}%`,
       top: `${b?.y ?? 50}%`,
-      transform: "translate(-50%,-50%)",
-      textAlign: b?.align ?? "center",
+      transform: `translate(${xTranslate},-50%)`,
+      textAlign: align,
       width: "88%",
       display: b?.visible === false ? "none" : undefined,
       fontSize: `${b?.fontSize ?? meta?.defaultFontSize ?? 0.85}em`,
@@ -84,6 +124,10 @@ export function PosterPreviewPane({
           <div style={blk("eventTitle")}>
             <p style={{ letterSpacing: "0.08em" }}>{layout.eventTitle?.text ?? SAMPLE.eventTitle}</p>
             <div style={{ width: "40%", height: "1px", margin: "4% auto 0", background: `linear-gradient(to right,transparent,${layout.eventTitle?.color ?? textColor}80,transparent)` }} />
+          </div>
+
+          <div style={blk("resultNumber")}>
+            <p>001</p>
           </div>
 
           <div style={blk("itemName")}>

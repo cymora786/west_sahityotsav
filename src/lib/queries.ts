@@ -370,3 +370,23 @@ export async function getDashboardStats() {
     announcements,
   };
 }
+
+export async function getCompetitionPoster(competitionId: string) {
+  return prisma.competitionPoster.findUnique({ where: { competitionId } });
+}
+
+export async function getAllCompetitionPosters() {
+  return prisma.competitionPoster.findMany();
+}
+
+export async function upsertCompetitionPoster(competitionId: string, posterImage: string) {
+  return prisma.competitionPoster.upsert({
+    where: { competitionId },
+    update: { posterImage },
+    create: { competitionId, posterImage },
+  });
+}
+
+export async function deleteCompetitionPoster(competitionId: string) {
+  return prisma.competitionPoster.deleteMany({ where: { competitionId } });
+}

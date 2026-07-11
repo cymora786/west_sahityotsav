@@ -208,6 +208,7 @@ export function TemplateForm({ template, action }: Props) {
                 primaryColor={customStyle ? primaryColor : undefined}
                 accentColor={customStyle ? accentColor : undefined}
                 textColor={customStyle ? textColor : undefined}
+                templateName={template?.name ?? ""}
               />
             </div>
           ) : (
@@ -215,6 +216,7 @@ export function TemplateForm({ template, action }: Props) {
               layout={posterLayout}
               bgImage={backgroundImage || null}
               onChange={setPosterLayout}
+              templateName={template?.name ?? ""}
             />
           )}
 

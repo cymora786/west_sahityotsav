@@ -7,6 +7,35 @@ import {
   AlignLeft, AlignCenter, AlignRight,
 } from "lucide-react";
 
+function ClassicCanvasBg() {
+  return (
+    <div className="pointer-events-none absolute inset-0" style={{ zIndex: 1 }}>
+      {/* Radial glow */}
+      <div style={{
+        position: "absolute", top: "42%", left: "58%",
+        transform: "translate(-50%,-50%)", width: "85%", height: "85%",
+        borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(160,30,30,0.32) 0%, rgba(160,30,30,0.10) 45%, transparent 70%)",
+      }} />
+      {/* Top header row */}
+      <div style={{ position: "absolute", top: "6%", left: 0, right: 0, display: "flex", alignItems: "center", justifyContent: "center", gap: "0.9rem", padding: "0 1.2rem" }}>
+        <img src="/images/because-we-are.svg" alt="" style={{ height: "2.2em", objectFit: "contain" }} />
+        <div style={{ width: "1px", height: "2em", background: "rgba(255,255,255,0.35)" }} />
+        <img src="/images/sahi-2026-date.svg" alt="" style={{ height: "2.2em", objectFit: "contain" }} />
+      </div>
+      {/* Bottom cream strip */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0,
+        background: "rgba(245,237,218,0.92)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: "5.5rem", color: "rgba(180,160,110,0.45)", fontWeight: 900,
+        overflow: "hidden", height: "10%", userSelect: "none",
+        letterSpacing: "0.5rem",
+      }}>VII VII VII</div>
+    </div>
+  );
+}
+
 export type PosterBlockConfig = {
   x: number;
   y: number;
@@ -101,6 +130,7 @@ interface Props {
   layout: PosterLayout;
   bgImage?: string | null;
   onChange: (layout: PosterLayout) => void;
+  templateName?: string;
 }
 
 export function PosterFontsLoader() {
@@ -109,7 +139,8 @@ export function PosterFontsLoader() {
   );
 }
 
-export function PosterDragEditor({ layout, bgImage, onChange }: Props) {
+export function PosterDragEditor({ layout, bgImage, onChange, templateName = "" }: Props) {
+  const isClassic = templateName.trim().toLowerCase() === "classic";
   const containerRef = React.useRef<HTMLDivElement>(null);
   const draggingId = React.useRef<string | null>(null);
   const layoutRef = React.useRef(layout);
@@ -334,10 +365,13 @@ export function PosterDragEditor({ layout, bgImage, onChange }: Props) {
         <div
           ref={containerRef}
           className="relative w-full select-none overflow-hidden rounded-lg border shadow-inner"
-          style={{ aspectRatio: "3/4", background: bgImage ? "transparent" : "#1e293b", fontSize: "1.5vw" }}
+          style={{ aspectRatio: "3/4", background: bgImage ? "transparent" : (isClassic ? "#2355b8" : "#1e293b"), fontSize: "1.5vw" }}
         >
           {bgImage && (
             <img src={bgImage} alt="" className="absolute inset-0 h-full w-full object-cover" draggable={false} />
+          )}
+          {isClassic && !bgImage && (
+            <ClassicCanvasBg />
           )}
 
           {/* Live text layer — exact same positions as poster output */}

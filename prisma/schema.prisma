@@ -183,6 +183,16 @@ model Result {
   @@map("results")
 }
 
+model CompetitionPoster {
+  id            String   @id @default(cuid())
+  competitionId String   @unique
+  posterImage   String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("competition_posters")
+}
+
 model GalleryCategory {
   id        String   @id @default(cuid())
   name      String

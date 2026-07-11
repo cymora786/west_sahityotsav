@@ -4,7 +4,7 @@ import {
   getPublishedCompetitions,
   getCompetitionResults,
 } from "@/lib/sahityotsav-api";
-import { getPosterTemplates, getGallery, getEventSettings } from "@/lib/queries";
+import { getPosterTemplates, getGallery, getEventSettings, getCompetitionPoster } from "@/lib/queries";
 import { PageBanner } from "@/components/site/page-banner";
 import { SectionHeading } from "@/components/site/section-heading";
 import { PosterView } from "@/components/site/results/poster-view";
@@ -47,12 +47,13 @@ export default async function ResultDetailPage({
 }) {
   const { id } = await params;
 
-  const [competitions, apiResults, templates, [bannerImage], shareSettings] = await Promise.all([
+  const [competitions, apiResults, templates, [bannerImage], shareSettings, competitionPoster] = await Promise.all([
     getPublishedCompetitions(),
     getCompetitionResults(id),
     getPosterTemplates(),
     getGallery(1),
     getEventSettings(),
+    getCompetitionPoster(id),
   ]);
 
   const comp = competitions?.find((c) => c.id === id);
@@ -138,9 +139,11 @@ export default async function ResultDetailPage({
           }
         />
 
-        <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
-          {/* Poster — primary */}
-          <PosterView result={result} templates={templates} shareSettings={shareSettings ?? undefined} />
+        <div className={competitionPoster?.posterImage ? "grid gap-10 lg:grid-cols-[1fr_380px]" : "max-w-xl"}>
+          {/* Poster — only shown when a custom poster has been uploaded */}
+          {competitionPoster?.posterImage && (
+            <PosterView result={result} templates={templates} shareSettings={shareSettings ?? undefined} customPosterImage={competitionPoster.posterImage} />
+          )}
 
           {/* Info panel */}
           <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">

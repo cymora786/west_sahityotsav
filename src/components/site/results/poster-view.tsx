@@ -53,10 +53,12 @@ export function PosterView({
   result,
   templates,
   shareSettings,
+  customPosterImage,
 }: {
   result: ResultDetail;
   templates: PosterTemplate[];
   shareSettings?: ShareSettings;
+  customPosterImage?: string | null;
 }) {
   const posterRef = React.useRef<HTMLDivElement>(null);
   // Track selection by DB template id to avoid key collision when names don't match hardcoded keys
@@ -195,7 +197,17 @@ export function PosterView({
       {/* Poster preview */}
       <div className="group relative overflow-hidden rounded-2xl shadow-xl ring-1 ring-border">
         <div ref={posterRef} className="aspect-[4/5] w-full">
-          {useCustomLayout ? <CustomLayoutPoster result={displayResult} /> : <PosterComponent result={displayResult} />}
+          {customPosterImage ? (
+            <img
+              src={customPosterImage}
+              alt={`${result.item.name} poster`}
+              className="w-full h-full object-cover"
+            />
+          ) : useCustomLayout ? (
+            <CustomLayoutPoster result={displayResult} />
+          ) : (
+            <PosterComponent result={displayResult} />
+          )}
         </div>
 
         {/* Expand overlay button */}
@@ -219,14 +231,24 @@ export function PosterView({
               {result.item.name} — {result.category.name} poster
             </DialogTitle>
             <div className="aspect-[4/5] overflow-hidden rounded-xl">
-              {useCustomLayout ? <CustomLayoutPoster result={displayResult} /> : <PosterComponent result={displayResult} />}
+              {customPosterImage ? (
+                <img
+                  src={customPosterImage}
+                  alt={`${result.item.name} poster`}
+                  className="w-full h-full object-cover"
+                />
+              ) : useCustomLayout ? (
+                <CustomLayoutPoster result={displayResult} />
+              ) : (
+                <PosterComponent result={displayResult} />
+              )}
             </div>
           </DialogContent>
         </Dialog>
       </div>
 
-      {/* Template picker — only show templates that exist in the DB */}
-      {templates.length > 1 && (
+      {/* Template picker — only show when no custom poster overrides */}
+      {!customPosterImage && templates.length > 1 && (
         <div>
           <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             Choose Style
