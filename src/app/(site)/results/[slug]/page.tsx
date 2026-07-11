@@ -4,6 +4,7 @@ import {
   getPublishedCompetitions,
   getCompetitionResults,
 } from "@/lib/sahityotsav-api";
+import { competitionSlug } from "@/lib/competition-utils";
 import { getPosterTemplates, getGallery, getEventSettings, getCompetitionPoster } from "@/lib/queries";
 import { PageBanner } from "@/components/site/page-banner";
 import { SectionHeading } from "@/components/site/section-heading";
@@ -18,11 +19,11 @@ import { ResultPopper } from "@/components/site/results/result-popper";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { id } = await params;
+  const { slug } = await params;
   const competitions = await getPublishedCompetitions();
-  const comp = competitions?.find((c) => c.id === id);
+  const comp = competitions?.find((c) => competitionSlug(c) === slug);
   if (!comp) return { title: "Result Not Found" };
   return {
     title: `${comp.name} — ${comp.category}`,
@@ -44,22 +45,24 @@ function makeDivision(teamName: string) {
 export default async function ResultDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { id } = await params;
+  const { slug } = await params;
 
-  const [competitions, apiResults, templates, galleryImages, shareSettings, competitionPoster] = await Promise.all([
-    getPublishedCompetitions(),
-    getCompetitionResults(id),
+  const competitions = await getPublishedCompetitions();
+  const comp = competitions?.find((c) => competitionSlug(c) === slug);
+  if (!comp) notFound();
+
+  const [apiResults, templates, galleryImages, shareSettings, competitionPoster] = await Promise.all([
+    getCompetitionResults(comp.id),
     getPosterTemplates().catch(() => []),
     getGallery(1).catch(() => []),
     getEventSettings().catch(() => null),
-    getCompetitionPoster(id).catch(() => null),
+    getCompetitionPoster(comp.id).catch(() => null),
   ]);
   const [bannerImage] = galleryImages;
 
-  const comp = competitions?.find((c) => c.id === id);
-  if (!comp || !apiResults) notFound();
+  if (!apiResults) notFound();
 
   const first = apiResults[0] ?? null;
   const second = apiResults[1] ?? null;
@@ -112,7 +115,7 @@ export default async function ResultDetailPage({
 
   // Related results: same category, excluding this one
   const related = (competitions ?? [])
-    .filter((c) => c.id !== id && c.category === comp.category)
+    .filter((c) => c.id !== comp.id && c.category === comp.category)
     .slice(0, 3);
 
   return (

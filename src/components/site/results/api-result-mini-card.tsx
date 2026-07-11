@@ -3,10 +3,11 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Trophy, Users, User } from "lucide-react";
 import type { ApiCompetition } from "@/lib/sahityotsav-api";
+import { competitionSlug } from "@/lib/competition-utils";
 
 export function ApiResultMiniCard({ competition }: { competition: ApiCompetition }) {
   return (
-    <Link href={`/results/${competition.id}`} className="group block">
+    <Link href={`/results/${competitionSlug(competition)}`} className="group block">
       <Card className="h-full transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-lg">
         <CardHeader className="pb-2">
           <div className="flex items-start justify-between gap-2">

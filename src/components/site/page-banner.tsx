@@ -27,13 +27,13 @@ export function PageBanner({
   return (
     <section className="relative isolate overflow-hidden" style={{ background: "linear-gradient(135deg, #2e6ab1 0%, #1d4e8f 60%, #163b70 100%)" }}>
       <div className="absolute inset-0">
-        {/* Background SVG pattern — always visible */}
+        {/* Background SVG */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/bg-pattern.svg"
+          src="/bg-banner.svg"
           alt=""
           aria-hidden
-          className="absolute inset-0 h-full w-full object-cover opacity-40 pointer-events-none select-none"
+          className="absolute inset-0 h-full w-full object-cover opacity-100 pointer-events-none select-none"
         />
         {imageUrl && (
           <Image

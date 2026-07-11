@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getPublishedCompetitions } from "@/lib/sahityotsav-api";
+import { competitionSlug } from "@/lib/competition-utils";
 import { Trophy, ArrowRight, Users, User } from "lucide-react";
 
 export async function LatestResultsCompact() {
@@ -30,7 +31,7 @@ export async function LatestResultsCompact() {
             {latest.map((comp) => (
               <li key={comp.id}>
                 <Link
-                  href={`/results/${comp.id}`}
+                  href={`/results/${competitionSlug(comp)}`}
                   className="flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-white/10"
                 >
                   <div className="flex items-center gap-3">

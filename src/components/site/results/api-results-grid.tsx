@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Trophy, Search, Users, User } from "lucide-react";
 import type { ApiCompetition } from "@/lib/sahityotsav-api";
+import { competitionSlug } from "@/lib/competition-utils";
 
 export function ApiResultsGrid({ results, initialQuery = "" }: { results: ApiCompetition[]; initialQuery?: string }) {
   const [query, setQuery] = React.useState(initialQuery);
@@ -76,7 +77,7 @@ export function ApiResultsGrid({ results, initialQuery = "" }: { results: ApiCom
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {displayed.map((comp) => (
-            <Link key={comp.id} href={`/results/${comp.id}`} className="group block">
+            <Link key={comp.id} href={`/results/${competitionSlug(comp)}`} className="group block">
               <Card className="h-full transition-all duration-200 group-hover:-translate-y-1 group-hover:shadow-lg">
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between gap-2">

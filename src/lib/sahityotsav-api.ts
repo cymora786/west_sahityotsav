@@ -6,7 +6,14 @@ const execAsync = promisify(exec);
 const BASE_URL = process.env.SAHITYOTSAV_BASE_URL ?? "https://demo.sahityotsav.com";
 const API_KEY = process.env.SAHITYOTSAV_API_KEY ?? "";
 
+// In-process cache to avoid hammering the rate-limited API
+const cache = new Map<string, { data: unknown; expiresAt: number }>();
+const CACHE_TTL_MS = 60_000; // 60 seconds
+
 async function apiFetch<T>(path: string): Promise<T | null> {
+  const cached = cache.get(path);
+  if (cached && cached.expiresAt > Date.now()) return cached.data as T;
+
   try {
     const url = `${BASE_URL}${path}`;
     const { stdout } = await execAsync(
@@ -14,7 +21,8 @@ async function apiFetch<T>(path: string): Promise<T | null> {
       { timeout: 15000 }
     );
     const json = JSON.parse(stdout);
-    if (!json || json.status === 401 || json.status === 403) return null;
+    if (!json || json.status === 401 || json.status === 403 || json.status === 429) return null;
+    cache.set(path, { data: json.data, expiresAt: Date.now() + CACHE_TTL_MS });
     return json.data as T;
   } catch {
     return null;
