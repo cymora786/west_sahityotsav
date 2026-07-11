@@ -111,17 +111,24 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
             )}
 
             {/* Full body */}
-            <div className="prose prose-base dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-primary">
-              {content.split("\n").map((para, i) =>
-                para.trim() ? (
-                  <p key={i} className="mb-4 leading-relaxed text-foreground/90">
-                    {para}
-                  </p>
-                ) : (
-                  <div key={i} className="h-2" />
-                )
-              )}
-            </div>
+            {/<[a-z][\s\S]*>/i.test(content) ? (
+              <div
+                className="prose prose-base dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-primary"
+                dangerouslySetInnerHTML={{ __html: content }}
+              />
+            ) : (
+              <div className="prose prose-base dark:prose-invert max-w-none prose-headings:font-bold prose-a:text-primary">
+                {content.split("\n").map((para, i) =>
+                  para.trim() ? (
+                    <p key={i} className="mb-4 leading-relaxed text-foreground/90">
+                      {para}
+                    </p>
+                  ) : (
+                    <div key={i} className="h-2" />
+                  )
+                )}
+              </div>
+            )}
           </div>
         </article>
 

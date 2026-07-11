@@ -5,8 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Building2, Layers, Users, CalendarDays, Trophy, Search, ArrowRight, Radio, BarChart3, ImageIcon } from "lucide-react";
+import { Building2, Layers, Users, CalendarDays, Trophy, Search, ArrowRight, Radio, BarChart3, ImageIcon, X } from "lucide-react";
 import { EVENT_STATS } from "@/lib/constants";
+import type { ApiCompetition } from "@/lib/sahityotsav-api";
 
 const LIVE_STREAM_URL = "https://www.youtube.com/live/yAogGfDNyso";
 
@@ -27,15 +28,53 @@ const STATS = [
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-export function Hero() {
+export function Hero({ competitions = [] }: { competitions?: ApiCompetition[] }) {
   const router = useRouter();
   const [query, setQuery] = React.useState("");
   const [focused, setFocused] = React.useState(false);
+  const [activeIndex, setActiveIndex] = React.useState(-1);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+  const listRef = React.useRef<HTMLUListElement>(null);
+
+  const suggestions = React.useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return competitions
+      .filter((c) =>
+        c.name.toLowerCase().includes(q) || c.category.toLowerCase().includes(q)
+      )
+      .slice(0, 7);
+  }, [query, competitions]);
+
+  const showDropdown = focused && suggestions.length > 0;
+
+  function selectSuggestion(comp: ApiCompetition) {
+    setQuery(comp.name);
+    router.push(`/results/${comp.id}`);
+  }
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
+    if (activeIndex >= 0 && suggestions[activeIndex]) {
+      selectSuggestion(suggestions[activeIndex]);
+      return;
+    }
     if (query.trim()) router.push(`/results?q=${encodeURIComponent(query.trim())}`);
     else router.push("/results");
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (!showDropdown) return;
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIndex((i) => Math.min(i + 1, suggestions.length - 1));
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIndex((i) => Math.max(i - 1, -1));
+    } else if (e.key === "Escape") {
+      setFocused(false);
+      setActiveIndex(-1);
+    }
   }
 
   return (
@@ -174,60 +213,101 @@ export function Hero() {
             <motion.div
               animate={focused ? { scale: 1.03 } : { scale: 1 }}
               transition={{ duration: 0.25 }}
-              className="relative flex items-center overflow-hidden rounded-2xl shadow-2xl shadow-black/40"
+              className="relative"
             >
-              {/* Glow ring on focus */}
+              {/* Input row */}
+              <div className={`relative flex items-center overflow-hidden shadow-2xl shadow-black/40 ${showDropdown ? "rounded-t-2xl" : "rounded-2xl"}`}>
+                {/* Glow ring on focus */}
+                <AnimatePresence>
+                  {focused && (
+                    <motion.div
+                      key="ring"
+                      className="pointer-events-none absolute inset-0 rounded-2xl"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      style={{ boxShadow: "0 0 0 3px rgba(200,255,255,0.35)" }}
+                    />
+                  )}
+                </AnimatePresence>
+
+                <Search className="absolute left-4 size-5 text-white/60 z-10 pointer-events-none" />
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={query}
+                  onChange={(e) => { setQuery(e.target.value); setActiveIndex(-1); }}
+                  onFocus={() => setFocused(true)}
+                  onBlur={() => setTimeout(() => setFocused(false), 150)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Search competitions, categories…"
+                  className="w-full bg-white/15 py-4 pl-12 pr-36 text-white placeholder-white/50 backdrop-blur-md outline-none text-base"
+                  autoComplete="off"
+                />
+                {query && (
+                  <button
+                    type="button"
+                    onClick={() => { setQuery(""); setActiveIndex(-1); inputRef.current?.focus(); }}
+                    className="absolute right-28 text-white/50 hover:text-white transition-colors"
+                    tabIndex={-1}
+                  >
+                    <X className="size-4" />
+                  </button>
+                )}
+                <button
+                  type="submit"
+                  className="absolute right-2 flex items-center gap-1.5 rounded-xl bg-[#ce416b] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#b83460] hover:scale-105 active:scale-95"
+                >
+                  Search <ArrowRight className="size-4" />
+                </button>
+              </div>
+
+              {/* Suggestions dropdown */}
               <AnimatePresence>
-                {focused && (
-                  <motion.div
-                    key="ring"
-                    className="pointer-events-none absolute inset-0 rounded-2xl"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    style={{ boxShadow: "0 0 0 3px rgba(200,255,255,0.35)" }}
-                  />
+                {showDropdown && (
+                  <motion.ul
+                    ref={listRef}
+                    key="suggestions"
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute left-0 right-0 z-50 overflow-hidden rounded-b-2xl border-t border-white/10 bg-[#1a1a3a]/95 backdrop-blur-lg shadow-2xl shadow-black/50"
+                  >
+                    {suggestions.map((comp, i) => (
+                      <li key={comp.id}>
+                        <button
+                          type="button"
+                          onMouseDown={() => selectSuggestion(comp)}
+                          className={`flex w-full items-center gap-3 px-4 py-3 text-left transition-colors ${
+                            i === activeIndex ? "bg-white/15" : "hover:bg-white/10"
+                          }`}
+                        >
+                          <Search className="size-3.5 shrink-0 text-white/40" />
+                          <span className="flex-1 truncate text-sm text-white">
+                            {comp.name}
+                          </span>
+                          <span className="shrink-0 rounded-full bg-white/10 px-2 py-0.5 text-[10px] font-medium text-white/60">
+                            {comp.category}
+                          </span>
+                        </button>
+                      </li>
+                    ))}
+                    <li className="border-t border-white/10 px-4 py-2.5">
+                      <button
+                        type="submit"
+                        className="flex w-full items-center gap-2 text-xs text-white/50 hover:text-white/80 transition-colors"
+                      >
+                        <ArrowRight className="size-3" />
+                        See all results for &ldquo;{query}&rdquo;
+                      </button>
+                    </li>
+                  </motion.ul>
                 )}
               </AnimatePresence>
-
-              <Search className="absolute left-4 size-5 text-white/60 z-10 pointer-events-none" />
-              <input
-                type="text"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onFocus={() => setFocused(true)}
-                onBlur={() => setFocused(false)}
-                placeholder="Search competitions, categories…"
-                className="w-full bg-white/15 py-4 pl-12 pr-36 text-white placeholder-white/50 backdrop-blur-md outline-none text-base"
-              />
-              <button
-                type="submit"
-                className="absolute right-2 flex items-center gap-1.5 rounded-xl bg-[#ce416b] px-4 py-2.5 text-sm font-bold text-white transition-all hover:bg-[#b83460] hover:scale-105 active:scale-95"
-              >
-                Search <ArrowRight className="size-4" />
-              </button>
             </motion.div>
           </form>
 
-          {/* Quick links */}
-          <motion.div
-            className="mt-3 flex flex-wrap items-center gap-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.3, duration: 0.5 }}
-          >
-            <span className="text-xs text-white/50">Quick:</span>
-            {["Quran", "Speech", "Story Writing", "Debate"].map((tag) => (
-              <button
-                key={tag}
-                type="button"
-                onClick={() => { setQuery(tag); router.push(`/results?q=${encodeURIComponent(tag)}`); }}
-                className="rounded-full border border-white/25 bg-white/10 px-3 py-1 text-xs text-white/80 backdrop-blur-sm transition-all hover:bg-white/20 hover:text-white"
-              >
-                {tag}
-              </button>
-            ))}
-          </motion.div>
         </motion.div>
       </div>
 

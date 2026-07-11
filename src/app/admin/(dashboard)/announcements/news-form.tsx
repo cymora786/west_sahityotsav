@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { ArrowLeft, Save } from "lucide-react";
 import { createAnnouncement, updateAnnouncement, type ActionState } from "./actions";
+import { RichTextEditor } from "@/components/admin/rich-text-editor";
 
 type Priority = "HIGH" | "NORMAL" | "LOW";
 
@@ -93,19 +94,16 @@ export function NewsForm({ item }: { item?: NewsItem }) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="body">
+          <Label>
             Full Article Body
             <span className="ml-1.5 text-xs font-normal text-muted-foreground">
-              (shown on the detail page — supports line breaks)
+              (shown on the detail page)
             </span>
           </Label>
-          <Textarea
-            id="body"
+          <RichTextEditor
             name="body"
             defaultValue={item?.body ?? ""}
-            placeholder="Write the full article content here. Each blank line becomes a new paragraph..."
-            rows={14}
-            className="font-mono text-sm leading-relaxed"
+            placeholder="Write the full article content here…"
           />
         </div>
 

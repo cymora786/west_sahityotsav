@@ -7,11 +7,13 @@ import { GalleryPreview } from "@/components/site/home/gallery-preview";
 import { NewsWidget } from "@/components/site/home/news-widget";
 import { MediaWidget } from "@/components/site/home/media-widget";
 import { Reveal } from "@/components/site/reveal";
+import { getPublishedCompetitions } from "@/lib/sahityotsav-api";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const competitions = (await getPublishedCompetitions()) ?? [];
   return (
     <>
-      <Hero />
+      <Hero competitions={competitions} />
       <section className="mx-auto grid max-w-7xl gap-6 px-4 py-12 sm:px-6 sm:grid-cols-1 lg:grid-cols-12 lg:px-8">
         <Reveal className="lg:col-span-5">
           <LiveStandings />
