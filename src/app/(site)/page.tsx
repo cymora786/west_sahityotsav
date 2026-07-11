@@ -52,10 +52,16 @@ export default function HomePage() {
   );
 }
 
+const LIVE_VIDEO_ID = "yAogGfDNyso";
+
 // Inline media widget styled to match the glass panels
 async function MediaCompact() {
   const { getMedia } = await import("@/lib/queries");
-  const videos = await getMedia(4);
+  const dbVideos = await getMedia(3);
+
+  // Always show the live stream as the first/featured video
+  const liveEntry = { id: "__live__", videoId: LIVE_VIDEO_ID, title: "SSF Sahityotsav 2026 — Live Stream" };
+  const videos = [liveEntry, ...dbVideos.filter((v) => v.videoId !== LIVE_VIDEO_ID).slice(0, 3)];
 
   return (
     <div className="h-full rounded-2xl border border-white/20 bg-white/10 backdrop-blur-md shadow-lg">
@@ -68,12 +74,38 @@ async function MediaCompact() {
           All Videos →
         </a>
       </div>
-      <div className="px-5 pb-5">
-        {videos.length === 0 ? (
-          <p className="py-10 text-center text-sm text-white/60">No videos yet.</p>
-        ) : (
+      <div className="px-5 pb-5 flex flex-col gap-2.5">
+        {/* Featured live video */}
+        <a
+          href={`https://www.youtube.com/live/${LIVE_VIDEO_ID}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group relative overflow-hidden rounded-xl border border-red-400/40 bg-white/5 transition-all hover:bg-white/15"
+        >
+          <div className="relative overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`https://img.youtube.com/vi/${LIVE_VIDEO_ID}/mqdefault.jpg`}
+              alt="Live Stream"
+              className="w-full object-cover aspect-video"
+            />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
+              <span className="flex size-10 items-center justify-center rounded-full bg-red-600 text-white shadow-lg">
+                ▶
+              </span>
+            </div>
+            <span className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-bold text-white">
+              <span className="size-1.5 rounded-full bg-white animate-pulse" />
+              LIVE
+            </span>
+          </div>
+          <p className="p-2 text-[11px] font-semibold text-white/90 line-clamp-1">{liveEntry.title}</p>
+        </a>
+
+        {/* Other DB videos */}
+        {dbVideos.length > 0 && (
           <div className="grid grid-cols-2 gap-2.5">
-            {videos.map((video) => (
+            {dbVideos.slice(0, 2).map((video) => (
               <a
                 key={video.id}
                 href={`https://www.youtube.com/watch?v=${video.videoId}`}

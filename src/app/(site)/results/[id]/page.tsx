@@ -104,6 +104,7 @@ export default async function ResultDetailPage({
     secondPlaceDivision: second ? makeDivision(second.teamName) : null,
     thirdPlaceDivision: third ? makeDivision(third.teamName) : null,
     template: template ?? null,
+    resultNumber: comp.resultNumber ?? null,
   } as unknown as ResultDetail;
 
   // Related results: same category, excluding this one
@@ -165,7 +166,7 @@ export default async function ResultDetailPage({
                   <span className="text-sm font-semibold">Participant Details</span>
                 </div>
                 <div className="divide-y">
-                  {apiResults.map((entry) => {
+                  {apiResults.filter((entry) => entry.rank <= 3).map((entry) => {
                     const rankLabel =
                       entry.rank === 1 ? "🥇 1st" :
                       entry.rank === 2 ? "🥈 2nd" :

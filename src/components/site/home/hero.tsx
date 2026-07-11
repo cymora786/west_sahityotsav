@@ -8,10 +8,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Building2, Layers, Users, CalendarDays, Trophy, Search, ArrowRight, Radio, BarChart3, ImageIcon } from "lucide-react";
 import { EVENT_STATS } from "@/lib/constants";
 
+const LIVE_STREAM_URL = "https://www.youtube.com/live/yAogGfDNyso";
+
 const CTA_BUTTONS = [
-  { label: "Live Results", href: "/results", icon: Radio },
-  { label: "Standings", href: "/standings", icon: BarChart3 },
-  { label: "Gallery", href: "/gallery", icon: ImageIcon },
+  { label: "Live Stream", href: LIVE_STREAM_URL, icon: Radio, external: true },
+  { label: "Results", href: "/results", icon: Trophy, external: false },
+  { label: "Standings", href: "/standings", icon: BarChart3, external: false },
+  { label: "Gallery", href: "/gallery", icon: ImageIcon, external: false },
 ];
 
 const STATS = [
@@ -140,7 +143,7 @@ export function Hero() {
             visible: { transition: { staggerChildren: 0.1, delayChildren: 0.75 } },
           }}
         >
-          {CTA_BUTTONS.map(({ label, href, icon: Icon }) => (
+          {CTA_BUTTONS.map(({ label, href, icon: Icon, external }) => (
             <motion.div
               key={label}
               variants={{
@@ -150,6 +153,7 @@ export function Hero() {
             >
               <Link
                 href={href}
+                {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                 className="flex items-center gap-2 rounded-full bg-[#ce416b] px-6 py-3 text-sm font-bold text-white shadow-md shadow-black/30 transition-all hover:scale-105 hover:bg-[#b83460] hover:shadow-lg"
               >
                 <Icon className="size-4 shrink-0" />

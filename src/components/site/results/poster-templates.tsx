@@ -177,23 +177,230 @@ function PosterShell({
   );
 }
 
-/* â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€
-   CLASSIC  — amber/lime on warm bg
-â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€â"€ */
+/* ─────────────────────────────────────────────
+   CLASSIC  — SSF official brand design
+───────────────────────────────────────────── */
 export function ClassicPoster({ result }: { result: ResultDetail }) {
+  const bg = result.template?.backgroundImage;
+
+  const winners = [
+    result.firstPlaceName
+      ? { name: result.firstPlaceName, div: result.division.name }
+      : null,
+    result.secondPlaceName
+      ? { name: result.secondPlaceName, div: result.secondPlaceDivision?.name }
+      : null,
+    result.thirdPlaceName
+      ? { name: result.thirdPlaceName, div: result.thirdPlaceDivision?.name }
+      : null,
+  ].filter(Boolean) as { name: string; div?: string | null }[];
+
+  const num = String((result as unknown as { resultNumber?: number | null }).resultNumber ?? "").padStart(3, "0");
+
   return (
-    <PosterShell
-      result={result}
-      fallback="bg-gradient-to-b from-amber-900 via-orange-900 to-amber-950"
-      scrim="bg-gradient-to-r from-black/50 via-black/20 to-transparent"
-      categoryColor="text-white/70"
-      itemColor="text-lime-400"
-      dot1="#f97316"
-      dot2="#c2713a"
-      dot3="#9ca3af"
-      nameColor="text-white"
-      divColor="text-white/60"
-    />
+    <div style={{
+      position: "relative", width: "100%", height: "100%",
+      display: "flex", flexDirection: "column", overflow: "hidden",
+      background: bg ? "transparent" : "#2355b8",
+      fontFamily: "system-ui, Arial, sans-serif",
+    }}>
+      <PosterCustomCss template={result.template} />
+
+      {/* Background */}
+      {bg ? (
+        <div style={{ position: "absolute", inset: 0, backgroundImage: `url(${bg})`, backgroundSize: "cover", backgroundPosition: "center" }} />
+      ) : (
+        <div style={{
+          position: "absolute",
+          top: "42%", left: "58%",
+          transform: "translate(-50%, -50%)",
+          width: "85%", height: "85%",
+          borderRadius: "50%",
+          background: "radial-gradient(circle, rgba(160,30,30,0.32) 0%, rgba(160,30,30,0.10) 45%, transparent 70%)",
+          pointerEvents: "none",
+        }} />
+      )}
+
+      {/* ── TOP HEADER ── */}
+      <div style={{
+        position: "relative", zIndex: 10,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        gap: "0.9rem", padding: "1.4rem 1.6rem 0.6rem",
+      }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/images/because-we-are.svg" alt="Because WE are" style={{ width: "34%", objectFit: "contain" }} />
+        <div style={{ width: 1, height: 52, background: "rgba(255,255,255,0.4)", flexShrink: 0 }} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/images/sahi-2026-date.svg" alt="Sahityotsav 2026" style={{ width: "50%", objectFit: "contain" }} />
+      </div>
+
+      {/* ── MAIN CONTENT (two-column) ── */}
+      <div style={{
+        position: "relative", zIndex: 10,
+        display: "flex", flex: 1,
+        padding: "0.5rem 1.4rem 0.5rem 0.6rem",
+        gap: "0.75rem",
+        alignItems: "center",
+      }}>
+
+        {/* LEFT: RESULT label + number + category + item */}
+        <div style={{ display: "flex", alignItems: "flex-start", gap: "0.35rem", flex: "0 0 42%", alignSelf: "center" }}>
+          {/* RESULT vertical */}
+          <div style={{
+            writingMode: "vertical-rl",
+            transform: "rotate(180deg)",
+            color: "#2ecc71",
+            fontWeight: 800,
+            fontSize: "0.52rem",
+            letterSpacing: "0.4em",
+            textTransform: "uppercase",
+            flexShrink: 0,
+            paddingBottom: "0.2rem",
+          }}>
+            RESULT
+          </div>
+
+          {/* Number + labels */}
+          <div style={{ flex: 1 }}>
+            {num && (
+              <p style={{
+                color: "#2ecc71",
+                fontWeight: 900,
+                fontSize: "3.6rem",
+                lineHeight: 0.88,
+                letterSpacing: "-0.03em",
+                margin: "0 0 0.5rem 0",
+              }}>
+                {num}
+              </p>
+            )}
+            <p style={{
+              color: "rgba(255,255,255,0.7)",
+              fontSize: "0.68rem",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.12em",
+              margin: "0 0 0.1rem 0",
+            }}>
+              {result.category.name}
+            </p>
+            <p style={{
+              color: "#ffffff",
+              fontWeight: 900,
+              fontSize: "1.35rem",
+              lineHeight: 1.1,
+              margin: 0,
+            }}>
+              {result.item.name}
+            </p>
+          </div>
+        </div>
+
+        {/* RIGHT: Winners list */}
+        <div style={{
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignSelf: "center",
+          overflow: "hidden",
+        }}>
+          {winners.map((w, i) => (
+            <div key={i} style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "0.45rem",
+              borderTop: "1px solid rgba(255,255,255,0.18)",
+              padding: "0.55rem 0",
+              overflow: "hidden",
+            }}>
+              <span style={{
+                color: "rgba(255,255,255,0.22)",
+                fontWeight: 900,
+                fontSize: "0.85rem",
+                letterSpacing: "-0.05em",
+                minWidth: "1.6rem",
+                flexShrink: 0,
+                textShadow: "none",
+              }}>
+                VII
+              </span>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <p style={{
+                  color: "#ffffff",
+                  fontWeight: 700,
+                  fontSize: "0.75rem",
+                  lineHeight: 1.2,
+                  margin: "0 0 0.1rem 0",
+                  textShadow: "none",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.03em",
+                  textAlign: "left",
+                  wordBreak: "break-word",
+                }}>
+                  {w.name}
+                </p>
+                {w.div && (
+                  <p style={{
+                    color: "rgba(255,255,255,0.5)",
+                    fontSize: "0.6rem",
+                    fontWeight: 400,
+                    lineHeight: 1.3,
+                    margin: 0,
+                    textShadow: "none",
+                    textAlign: "left",
+                    wordBreak: "break-word",
+                  }}>
+                    {w.div}
+                  </p>
+                )}
+              </div>
+            </div>
+          ))}
+          {winners.length > 0 && (
+            <div style={{ borderTop: "1px solid rgba(255,255,255,0.18)" }} />
+          )}
+        </div>
+      </div>
+
+      {/* ── BOTTOM DECORATION ── */}
+      <div style={{ position: "relative", zIndex: 10, marginTop: "auto" }}>
+        {/* Green circular badge */}
+        <div style={{
+          position: "absolute",
+          bottom: "3.6rem",
+          left: "1.1rem",
+          width: "4rem",
+          height: "4rem",
+          borderRadius: "50%",
+          background: "#2ecc71",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 20,
+        }}>
+          <span style={{ color: "#145a2e", fontWeight: 900, fontSize: "1rem", lineHeight: 1 }}>VII</span>
+          <span style={{ color: "#145a2e", fontSize: "0.26rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", marginTop: "0.1rem", textAlign: "center", lineHeight: 1.4 }}>
+            MALAPPURAM{"\n"}WEST
+          </span>
+        </div>
+
+        {/* Large decorative bottom strip */}
+        <div style={{ overflow: "hidden", lineHeight: 0.82, paddingLeft: "4rem" }}>
+          <p style={{
+            color: "#f5f0dc",
+            fontWeight: 900,
+            fontSize: "5.5rem",
+            letterSpacing: "-0.02em",
+            whiteSpace: "nowrap",
+            margin: 0,
+          }}>
+            VII VII VII
+          </p>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -308,12 +515,14 @@ export function CustomLayoutPoster({ result }: { result: ResultDetail }) {
   function blk(id: string): CSSProperties {
     const b: PosterBlockConfig | undefined = layout[id];
     const meta = POSTER_BLOCKS[id];
+    const align = b?.align ?? "center";
+    const xTranslate = align === "left" ? "0%" : align === "right" ? "-100%" : "-50%";
     return {
       position: "absolute",
       left: `${b?.x ?? 50}%`,
       top: `${b?.y ?? 50}%`,
-      transform: "translate(-50%,-50%)",
-      textAlign: b?.align ?? "center",
+      transform: `translate(${xTranslate},-50%)`,
+      textAlign: align,
       width: "88%",
       display: b?.visible === false ? "none" : undefined,
       fontSize: `${b?.fontSize ?? meta?.defaultFontSize ?? 0.85}em`,
@@ -324,6 +533,8 @@ export function CustomLayoutPoster({ result }: { result: ResultDetail }) {
       textShadow: hasBg ? "0 1px 4px rgba(0,0,0,0.7)" : "none",
     };
   }
+
+  const resultNum = String((result as unknown as { resultNumber?: number }).resultNumber ?? "").padStart(3, "0");
 
   const winners = [
     result.firstPlaceName ? { name: result.firstPlaceName, div: result.division.name } : null,
@@ -349,10 +560,7 @@ export function CustomLayoutPoster({ result }: { result: ResultDetail }) {
       <style>{`@import url('${GOOGLE_FONTS_URL}');`}</style>
       <PosterCustomCss template={result.template} />
       {hasBg && (
-        <>
-          <img src={bg!} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }} />
-          <div style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.35)", zIndex: 1 }} />
-        </>
+        <img src={bg!} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", zIndex: 0 }} />
       )}
 
       <div style={{ position: "absolute", inset: 0, zIndex: 2 }}>
@@ -365,6 +573,11 @@ export function CustomLayoutPoster({ result }: { result: ResultDetail }) {
           <p style={{ letterSpacing: "0.08em" }}>{layout.eventTitle?.text ?? "SAHITYOTSAV 2026"}</p>
           <div style={{ width: "40%", height: "1px", margin: "0.4em auto 0", background: `linear-gradient(to right,transparent,${layout.eventTitle?.color ?? tc}80,transparent)` }} />
         </div>
+        {resultNum && (
+          <div style={blk("resultNumber")}>
+            <p>{resultNum}</p>
+          </div>
+        )}
         <div style={blk("itemName")}>
           <p>{result.item.name}</p>
         </div>

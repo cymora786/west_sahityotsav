@@ -32,31 +32,33 @@ export type PosterBlockMeta = {
 };
 
 export const POSTER_BLOCKS: Record<string, PosterBlockMeta> = {
-  orgName:     { label: "Organisation Name",    editable: true,  dynamic: false, defaultText: "SSF Malappuram West", sampleText: "SSF Malappuram West", defaultFontSize: 0.65 },
-  eventTitle:  { label: "Event Title",          editable: true,  dynamic: false, defaultText: "SAHITYOTSAV 2026",    sampleText: "SAHITYOTSAV 2026",    defaultFontSize: 1.4  },
-  itemName:    { label: "Competition Name",     editable: false, dynamic: true,  defaultText: "",                    sampleText: "English Elocution",   defaultFontSize: 1.3  },
-  category:    { label: "Category",             editable: false, dynamic: true,  defaultText: "",                    sampleText: "High School",         defaultFontSize: 0.7  },
-  firstPlace:  { label: "1st Place — Name",     editable: false, dynamic: true,  defaultText: "",                    sampleText: "Ahmed Riyadh",        defaultFontSize: 0.9  },
-  firstTeam:   { label: "1st Place — Team",     editable: false, dynamic: true,  defaultText: "",                    sampleText: "Unit A",              defaultFontSize: 0.65 },
-  secondPlace: { label: "2nd Place — Name",     editable: false, dynamic: true,  defaultText: "",                    sampleText: "Sara Fathima",        defaultFontSize: 0.9  },
-  secondTeam:  { label: "2nd Place — Team",     editable: false, dynamic: true,  defaultText: "",                    sampleText: "Unit B",              defaultFontSize: 0.65 },
-  thirdPlace:  { label: "3rd Place — Name",     editable: false, dynamic: true,  defaultText: "",                    sampleText: "Zain Ali",            defaultFontSize: 0.9  },
-  thirdTeam:   { label: "3rd Place — Team",     editable: false, dynamic: true,  defaultText: "",                    sampleText: "Unit C",              defaultFontSize: 0.65 },
-  date:        { label: "Date",                 editable: false, dynamic: true,  defaultText: "",                    sampleText: "January 2026",        defaultFontSize: 0.6  },
+  orgName:      { label: "Organisation Name",    editable: true,  dynamic: false, defaultText: "SSF Malappuram West", sampleText: "SSF Malappuram West", defaultFontSize: 0.65 },
+  eventTitle:   { label: "Event Title",          editable: true,  dynamic: false, defaultText: "SAHITYOTSAV 2026",    sampleText: "SAHITYOTSAV 2026",    defaultFontSize: 1.4  },
+  resultNumber: { label: "Result Number",        editable: false, dynamic: true,  defaultText: "",                    sampleText: "001",                 defaultFontSize: 2.5  },
+  itemName:     { label: "Competition Name",     editable: false, dynamic: true,  defaultText: "",                    sampleText: "English Elocution",   defaultFontSize: 1.3  },
+  category:     { label: "Category",             editable: false, dynamic: true,  defaultText: "",                    sampleText: "High School",         defaultFontSize: 0.7  },
+  firstPlace:   { label: "1st Place — Name",     editable: false, dynamic: true,  defaultText: "",                    sampleText: "Ahmed Riyadh",        defaultFontSize: 0.9  },
+  firstTeam:    { label: "1st Place — Team",     editable: false, dynamic: true,  defaultText: "",                    sampleText: "Unit A",              defaultFontSize: 0.65 },
+  secondPlace:  { label: "2nd Place — Name",     editable: false, dynamic: true,  defaultText: "",                    sampleText: "Sara Fathima",        defaultFontSize: 0.9  },
+  secondTeam:   { label: "2nd Place — Team",     editable: false, dynamic: true,  defaultText: "",                    sampleText: "Unit B",              defaultFontSize: 0.65 },
+  thirdPlace:   { label: "3rd Place — Name",     editable: false, dynamic: true,  defaultText: "",                    sampleText: "Zain Ali",            defaultFontSize: 0.9  },
+  thirdTeam:    { label: "3rd Place — Team",     editable: false, dynamic: true,  defaultText: "",                    sampleText: "Unit C",              defaultFontSize: 0.65 },
+  date:         { label: "Date",                 editable: false, dynamic: true,  defaultText: "",                    sampleText: "January 2026",        defaultFontSize: 0.6  },
 };
 
 export const DEFAULT_POSTER_LAYOUT: PosterLayout = {
-  orgName:     { x: 50, y: 8,  visible: true, bold: false, italic: false, align: "center" },
-  eventTitle:  { x: 50, y: 17, visible: true, bold: true,  italic: false, align: "center" },
-  itemName:    { x: 50, y: 32, visible: true, bold: true,  italic: false, align: "center" },
-  category:    { x: 50, y: 40, visible: true, bold: false, italic: false, align: "center" },
-  firstPlace:  { x: 50, y: 52, visible: true, bold: true,  italic: false, align: "center" },
-  firstTeam:   { x: 50, y: 58, visible: true, bold: false, italic: false, align: "center" },
-  secondPlace: { x: 50, y: 66, visible: true, bold: true,  italic: false, align: "center" },
-  secondTeam:  { x: 50, y: 72, visible: true, bold: false, italic: false, align: "center" },
-  thirdPlace:  { x: 50, y: 80, visible: true, bold: true,  italic: false, align: "center" },
-  thirdTeam:   { x: 50, y: 86, visible: true, bold: false, italic: false, align: "center" },
-  date:        { x: 50, y: 94, visible: true, bold: false, italic: false, align: "center" },
+  orgName:      { x: 50, y: 8,  visible: true, bold: false, italic: false, align: "center" },
+  eventTitle:   { x: 50, y: 17, visible: true, bold: true,  italic: false, align: "center" },
+  resultNumber: { x: 50, y: 27, visible: true, bold: true,  italic: false, align: "center" },
+  itemName:     { x: 50, y: 38, visible: true, bold: true,  italic: false, align: "center" },
+  category:     { x: 50, y: 46, visible: true, bold: false, italic: false, align: "center" },
+  firstPlace:   { x: 50, y: 56, visible: true, bold: true,  italic: false, align: "center" },
+  firstTeam:    { x: 50, y: 62, visible: true, bold: false, italic: false, align: "center" },
+  secondPlace:  { x: 50, y: 70, visible: true, bold: true,  italic: false, align: "center" },
+  secondTeam:   { x: 50, y: 76, visible: true, bold: false, italic: false, align: "center" },
+  thirdPlace:   { x: 50, y: 83, visible: true, bold: true,  italic: false, align: "center" },
+  thirdTeam:    { x: 50, y: 89, visible: true, bold: false, italic: false, align: "center" },
+  date:         { x: 50, y: 95, visible: true, bold: false, italic: false, align: "center" },
 };
 
 export function parsePosterLayout(raw: string | null | undefined): PosterLayout {
@@ -66,6 +68,7 @@ export function parsePosterLayout(raw: string | null | undefined): PosterLayout 
 
 const BLOCK_COLORS: Record<string, string> = {
   orgName: "#3b82f6", eventTitle: "#1d4ed8",
+  resultNumber: "#7c3aed",
   itemName: "#10b981", category: "#059669",
   firstPlace: "#d97706", firstTeam: "#b45309",
   secondPlace: "#6b7280", secondTeam: "#4b5563",
@@ -282,10 +285,11 @@ export function PosterDragEditor({ layout, bgImage, onChange }: Props) {
   }
 
   const SAMPLE_TEXT: Record<string, string> = {
-    orgName:     layout.orgName?.text     ?? "SSF Malappuram West",
-    eventTitle:  layout.eventTitle?.text  ?? "SAHITYOTSAV 2026",
-    itemName:    "English Elocution",
-    category:    "High School",
+    orgName:      layout.orgName?.text     ?? "SSF Malappuram West",
+    eventTitle:   layout.eventTitle?.text  ?? "SAHITYOTSAV 2026",
+    resultNumber: "001",
+    itemName:     "English Elocution",
+    category:     "High School",
     firstPlace:  "Ahmed Riyadh",
     firstTeam:   "Unit A",
     secondPlace: "Sara Fathima",
@@ -298,14 +302,17 @@ export function PosterDragEditor({ layout, bgImage, onChange }: Props) {
   function canvasBlk(id: string): React.CSSProperties {
     const b = layout[id];
     const meta = POSTER_BLOCKS[id];
+    const align = b?.align ?? "center";
+    const xTranslate = align === "left" ? "0%" : align === "right" ? "-100%" : "-50%";
     const tc = "#ffffff";
     return {
       position: "absolute",
       left: `${b?.x ?? 50}%`,
       top: `${b?.y ?? 50}%`,
-      transform: "translate(-50%,-50%)",
-      textAlign: b?.align ?? "center",
+      transform: `translate(${xTranslate},-50%)`,
+      textAlign: align,
       width: "88%",
+      maxWidth: align === "center" ? "88%" : undefined,
       pointerEvents: "none",
       display: b?.visible === false ? "none" : undefined,
       fontSize: `${b?.fontSize ?? meta?.defaultFontSize ?? 0.85}em`,
@@ -330,10 +337,7 @@ export function PosterDragEditor({ layout, bgImage, onChange }: Props) {
           style={{ aspectRatio: "3/4", background: bgImage ? "transparent" : "#1e293b", fontSize: "1.5vw" }}
         >
           {bgImage && (
-            <>
-              <img src={bgImage} alt="" className="absolute inset-0 h-full w-full object-cover" draggable={false} />
-              <div className="absolute inset-0 bg-black/30" />
-            </>
+            <img src={bgImage} alt="" className="absolute inset-0 h-full w-full object-cover" draggable={false} />
           )}
 
           {/* Live text layer — exact same positions as poster output */}
@@ -345,6 +349,7 @@ export function PosterDragEditor({ layout, bgImage, onChange }: Props) {
               <p style={{ letterSpacing: "0.08em" }}>{SAMPLE_TEXT.eventTitle}</p>
               <div style={{ width: "40%", height: "1px", margin: "0.4em auto 0", background: `linear-gradient(to right,transparent,${layout.eventTitle?.color ?? "#ffffff"}80,transparent)` }} />
             </div>
+            <div style={canvasBlk("resultNumber")}><p>{SAMPLE_TEXT.resultNumber}</p></div>
             <div style={canvasBlk("itemName")}><p>{SAMPLE_TEXT.itemName}</p></div>
             <div style={canvasBlk("category")}><p style={{ textTransform: "uppercase", letterSpacing: "0.2em", opacity: 0.8 }}>{SAMPLE_TEXT.category}</p></div>
             <div style={canvasBlk("firstPlace")}><p>{SAMPLE_TEXT.firstPlace}</p></div>
