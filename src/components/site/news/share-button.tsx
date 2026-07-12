@@ -5,7 +5,7 @@ import { Share2, Link, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-export function ShareButton({ title, text }: { title: string; text: string }) {
+export function ShareButton({ title, text, imageUrl }: { title: string; text: string; imageUrl?: string | null }) {
   const [copied, setCopied] = React.useState(false);
 
   async function handleShare() {
@@ -13,6 +13,21 @@ export function ShareButton({ title, text }: { title: string; text: string }) {
 
     if (navigator.share) {
       try {
+        // Try to share with image file if available and supported
+        if (imageUrl && navigator.canShare) {
+          try {
+            const res = await fetch(imageUrl);
+            const blob = await res.blob();
+            const ext = blob.type.includes("png") ? "png" : "jpg";
+            const file = new File([blob], `news-image.${ext}`, { type: blob.type });
+            if (navigator.canShare({ files: [file] })) {
+              await navigator.share({ title, text, url, files: [file] });
+              return;
+            }
+          } catch {
+            // fall through to text-only share
+          }
+        }
         await navigator.share({ title, text, url });
       } catch {
         // user cancelled

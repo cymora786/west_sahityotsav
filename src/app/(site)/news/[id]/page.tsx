@@ -103,7 +103,7 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
                   {formatDistanceToNow(item.createdAt, { addSuffix: true })}
                 </span>
               </div>
-              <ShareButton title={item.title} text={item.description} />
+              <ShareButton title={item.title} text={item.description} imageUrl={item.imageUrl} />
             </div>
 
             {/* Title */}
