@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import { getGallery, getGalleryCategories } from "@/lib/queries";
 import { PageBanner } from "@/components/site/page-banner";
 import { GalleryExplorer } from "@/components/site/gallery/gallery-explorer";

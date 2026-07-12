@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import { getPublishedCompetitions } from "@/lib/sahityotsav-api";
 import { getGallery, getAllCompetitionPosters } from "@/lib/queries";
 import { PageBanner } from "@/components/site/page-banner";

@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import { Hero } from "@/components/site/home/hero";
 import { LiveStandings } from "@/components/site/home/live-standings";
 import { CategoryLeaders } from "@/components/site/home/category-leaders";

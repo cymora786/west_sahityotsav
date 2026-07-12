@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import { getCertificateSettings } from "@/lib/queries";
 import { CertificatePrintSheet } from "@/components/admin/certificate-print-sheet";
 import type { ApiCompetition, ApiCompetitionResult } from "@/lib/sahityotsav-api";

@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import { getCategories, getItems, getGallery } from "@/lib/queries";
 import { PageBanner } from "@/components/site/page-banner";
 import { ItemsExplorer } from "@/components/site/items/items-explorer";

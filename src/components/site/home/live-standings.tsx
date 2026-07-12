@@ -56,7 +56,7 @@ export async function LiveStandings() {
                 {hasPoints && index < 3 ? <Trophy className="size-3.5" /> : hasPoints ? index + 1 : "—"} 
               </span>
               <div className="min-w-0 flex-1">
-                <div className="mb-1 flex items-center justify-between gap-2">
+                <div className="mb-1 flex items-center justify-between gap-2"> 
                   {d.points > 0 ? ( 
                     <Link href={`/division/${d.slug}`} className="truncate text-sm font-medium hover:underline">
                       {d.name}

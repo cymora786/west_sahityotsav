@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import { getAnnouncements, getGallery } from "@/lib/queries";
 import { PageBanner } from "@/components/site/page-banner";
 import { Card, CardContent } from "@/components/ui/card";

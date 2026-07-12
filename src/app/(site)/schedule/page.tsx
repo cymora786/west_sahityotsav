@@ -1,3 +1,5 @@
+export const revalidate = 60;
+
 import { getApiSchedule } from "@/lib/sahityotsav-api";
 import { getGallery } from "@/lib/queries";
 import { PageBanner } from "@/components/site/page-banner";
