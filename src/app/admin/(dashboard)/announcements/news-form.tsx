@@ -17,6 +17,7 @@ import {
 import { ArrowLeft, Save } from "lucide-react";
 import { createAnnouncement, updateAnnouncement, type ActionState } from "./actions";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
+import { ImageUpload } from "@/components/admin/image-upload";
 
 type Priority = "HIGH" | "NORMAL" | "LOW";
 
@@ -34,6 +35,7 @@ const initialState: ActionState = {};
 export function NewsForm({ item }: { item?: NewsItem }) {
   const router = useRouter();
   const [priority, setPriority] = React.useState<Priority>(item?.priority ?? "NORMAL");
+  const [imageUrl, setImageUrl] = React.useState(item?.imageUrl ?? "");
 
   const action = item
     ? updateAnnouncement.bind(null, item.id)
@@ -109,17 +111,16 @@ export function NewsForm({ item }: { item?: NewsItem }) {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="imageUrl">
-              Cover Image URL
+            <Label>
+              Cover Image
               <span className="ml-1.5 text-xs font-normal text-muted-foreground">(optional)</span>
             </Label>
-            <Input
-              id="imageUrl"
-              name="imageUrl"
-              type="url"
-              defaultValue={item?.imageUrl ?? ""}
-              placeholder="https://example.com/image.jpg"
+            <ImageUpload
+              value={imageUrl}
+              onChange={setImageUrl}
+              folder="announcements"
             />
+            <input type="hidden" name="imageUrl" value={imageUrl} />
           </div>
 
           <div className="space-y-2">

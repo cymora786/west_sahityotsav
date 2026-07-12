@@ -138,18 +138,30 @@ export function getApiSchedule() {
  * Computes which team leads each category based on first-place wins.
  * Fetches all competition results in parallel (cached per request).
  */
+const LEADERS_CACHE_KEY = "__category_leaders__";
+const LEADERS_TTL_MS = 5 * 60_000; // 5 minutes
+
 export async function getApiCategoryLeaders(): Promise<ApiCategoryLeader[]> {
+  const cached = cache.get(LEADERS_CACHE_KEY);
+  if (cached && cached.expiresAt > Date.now()) return cached.data as ApiCategoryLeader[];
+
   const competitions = await getPublishedCompetitions();
   if (!competitions || competitions.length === 0) return [];
 
-  // Fetch all competition results in parallel
-  const allResults = await Promise.all(
-    competitions.map(async (comp) => {
-      const results = await getCompetitionResults(comp.id);
-      const winner = results?.find((r) => r.rank === 1);
-      return { category: comp.category, winner };
-    })
-  );
+  // Fetch results in small batches to avoid rate-limit bursts
+  const BATCH = 5;
+  const allResults: { category: string; winner: ApiCompetitionResult | undefined }[] = [];
+  for (let i = 0; i < competitions.length; i += BATCH) {
+    const batch = competitions.slice(i, i + BATCH);
+    const batchResults = await Promise.all(
+      batch.map(async (comp) => {
+        const results = await getCompetitionResults(comp.id);
+        const winner = results?.find((r) => r.rank === 1);
+        return { category: comp.category, winner };
+      })
+    );
+    allResults.push(...batchResults);
+  }
 
   // Count first-place wins per team per category
   const winsMap = new Map<string, Map<string, number>>();
@@ -174,7 +186,9 @@ export async function getApiCategoryLeaders(): Promise<ApiCategoryLeader[]> {
     if (topTeam) leaders.push({ category, teamName: topTeam, wins: topWins });
   }
 
-  return leaders.sort((a, b) => a.category.localeCompare(b.category));
+  const result = leaders.sort((a, b) => a.category.localeCompare(b.category));
+  cache.set(LEADERS_CACHE_KEY, { data: result, expiresAt: Date.now() + LEADERS_TTL_MS });
+  return result;
 }
 
 /**

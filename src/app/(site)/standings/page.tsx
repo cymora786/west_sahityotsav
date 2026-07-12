@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { getDivisionsList, getGallery } from "@/lib/queries";
 import { getTeamPoints, getPublishedCompetitions } from "@/lib/sahityotsav-api";
 import { PageBanner } from "@/components/site/page-banner";
