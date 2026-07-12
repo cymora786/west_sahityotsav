@@ -46,7 +46,7 @@ export async function LiveStandings() {
         {rows.map((d, index) => {
           const width = Math.max(maxPoints > 0 ? (d.points / maxPoints) * 100 : 0, d.points > 0 ? 4 : 0);
           return (
-            <li key={d.id} className="flex items-center gap-3">
+            <li key={d.id} className="flex items-center gap-3"> 
               <span
                 className={cn(
                   "flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold",
