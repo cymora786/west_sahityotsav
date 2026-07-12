@@ -10,13 +10,14 @@ import { NewsWidget } from "@/components/site/home/news-widget";
 import { MediaWidget } from "@/components/site/home/media-widget";
 import { Reveal } from "@/components/site/reveal";
 import { getPublishedCompetitions } from "@/lib/sahityotsav-api";
+import { ShortsSection } from "@/components/site/home/shorts-section";
 
 export default async function HomePage() {
   const competitions = (await getPublishedCompetitions()) ?? [];
   return (
     <>
       <Hero competitions={competitions} />
-      <section className="mx-auto grid max-w-7xl items-stretch gap-6 px-4 py-12 sm:px-6 sm:grid-cols-1 lg:grid-cols-12 lg:px-8">
+      <section className="mx-auto grid max-w-7xl items-stretch gap-6 px-4 py-12 lg:py-18 sm:px-6 sm:grid-cols-1 lg:grid-cols-12 lg:px-8">
         <Reveal className="lg:col-span-5">
           <LiveStandings />
         </Reveal>
@@ -24,7 +25,7 @@ export default async function HomePage() {
           <CategoryNav />
         </Reveal>
       </section>
-      <section className="relative isolate overflow-hidden py-14">
+      <section className="relative isolate overflow-hidden py-12 lg:py-18">
         {/* Background */}
         <div className="absolute inset-0 -z-10" style={{ background: "linear-gradient(135deg, #2e6ab1 0%, #1d4e8f 60%, #163b70 100%)" }} />
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -42,7 +43,7 @@ export default async function HomePage() {
           </Reveal>
         </div>
       </section>
-      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 py-12 lg:pt-18 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-2">
           <Reveal>
             <GalleryPreview inline />
@@ -52,11 +53,12 @@ export default async function HomePage() {
           </Reveal>
         </div>
       </section>
+      <ShortsSection />
     </>
   );
 }
 
-const LIVE_VIDEO_ID = "EDjh_VWZ0wY";
+const LIVE_VIDEO_ID = "9XDh357XfXc";
 
 // Inline media widget styled to match the glass panels 
 async function MediaCompact() {

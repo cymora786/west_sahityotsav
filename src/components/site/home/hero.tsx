@@ -9,7 +9,7 @@ import { Building2, Layers, Users, CalendarDays, Trophy, Search, ArrowRight, Rad
 import { EVENT_STATS } from "@/lib/constants";
 import type { ApiCompetition } from "@/lib/sahityotsav-api";
 
-const LIVE_STREAM_URL = "https://www.youtube.com/watch?v=EDjh_VWZ0wY";
+const LIVE_STREAM_URL = "https://www.youtube.com/watch?v=9XDh357XfXc";
 
 const CTA_BUTTONS = [
   { label: "Live Stream", href: LIVE_STREAM_URL, icon: Radio, external: true },

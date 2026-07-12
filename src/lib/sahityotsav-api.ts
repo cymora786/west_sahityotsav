@@ -224,6 +224,32 @@ export async function getApiDivisionResults(
 }
 
 /**
+ * Fetches latest Shorts video IDs from the SSF YouTube channel page.
+ */
+export async function getYouTubeShorts(limit = 8): Promise<{ id: string }[]> {
+  try {
+    const res = await fetch("https://www.youtube.com/@SSFMlpmWestMedia/shorts", {
+      headers: {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept-Language": "en-US,en;q=0.9",
+      },
+      next: { revalidate: 300 },
+    });
+    const html = await res.text();
+    const matches = [...html.matchAll(/(?:\\\/|\/|%2F)shorts(?:\\\/|\/|%2F)([a-zA-Z0-9_-]{11})/g)];
+    const seen = new Set<string>();
+    const ids: { id: string }[] = [];
+    for (const m of matches) {
+      if (!seen.has(m[1])) { seen.add(m[1]); ids.push({ id: m[1] }); }
+      if (ids.length >= limit) break;
+    }
+    return ids;
+  } catch {
+    return [];
+  }
+}
+
+/**
  * Computes programme progress from schedule statuses.
  */
 export async function getApiProgrammeProgress() {
