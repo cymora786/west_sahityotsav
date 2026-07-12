@@ -21,7 +21,7 @@ export function ShareButton({ title, text, imageUrl }: { title: string; text: st
             const ext = blob.type.includes("png") ? "png" : "jpg";
             const file = new File([blob], `news-image.${ext}`, { type: blob.type });
             if (navigator.canShare({ files: [file] })) {
-              await navigator.share({ title, text, url, files: [file] });
+              await navigator.share({  files: [file], title, text, url });
               return;
             }
           } catch {
