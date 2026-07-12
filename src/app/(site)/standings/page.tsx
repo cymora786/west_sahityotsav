@@ -4,7 +4,6 @@ import { getDivisionsList, getGallery } from "@/lib/queries";
 import { getTeamPoints, getPublishedCompetitions } from "@/lib/sahityotsav-api";
 import { PageBanner } from "@/components/site/page-banner";
 import { StandingsTable } from "@/components/site/standings/standings-table";
-import { StandingsByCategory } from "@/components/site/standings/standings-by-category";
 import { Trophy, Building2 } from "lucide-react";
 import { CelebrationEffect } from "@/components/site/standings/celebration-effect";
 
@@ -77,9 +76,6 @@ export default async function StandingsPage() {
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <StandingsTable rows={rows} />
 
-        <div className="mt-12">
-          <StandingsByCategory />
-        </div>
       </section>
     </>
   );

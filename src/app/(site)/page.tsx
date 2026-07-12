@@ -2,7 +2,7 @@ export const revalidate = 60;
 
 import { Hero } from "@/components/site/home/hero";
 import { LiveStandings } from "@/components/site/home/live-standings";
-import { CategoryLeaders } from "@/components/site/home/category-leaders";
+import { CategoryNav } from "@/components/site/home/category-nav";
 import { LatestResultsCompact } from "@/components/site/home/latest-results-compact";
 import { QuickLinksGrid } from "@/components/site/home/quick-links-grid";
 import { GalleryPreview } from "@/components/site/home/gallery-preview";
@@ -16,12 +16,12 @@ export default async function HomePage() {
   return (
     <>
       <Hero competitions={competitions} />
-      <section className="mx-auto grid max-w-7xl gap-6 px-4 py-12 sm:px-6 sm:grid-cols-1 lg:grid-cols-12 lg:px-8">
+      <section className="mx-auto grid max-w-7xl items-stretch gap-6 px-4 py-12 sm:px-6 sm:grid-cols-1 lg:grid-cols-12 lg:px-8">
         <Reveal className="lg:col-span-5">
           <LiveStandings />
         </Reveal>
-        <Reveal className="lg:col-span-7" delay={100}>
-          <CategoryLeaders />
+        <Reveal className="lg:col-span-7 h-full" delay={100}>
+          <CategoryNav />
         </Reveal>
       </section>
       <section className="relative isolate overflow-hidden py-14">

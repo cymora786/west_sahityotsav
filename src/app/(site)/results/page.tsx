@@ -15,9 +15,9 @@ export const metadata = {
 export default async function ResultsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; category?: string }>;
 }) {
-  const { q } = await searchParams;
+  const { q, category } = await searchParams;
   const [competitions, galleryImages, allPosters] = await Promise.all([
     getPublishedCompetitions(),
     getGallery(1).catch(() => []),
@@ -52,7 +52,7 @@ export default async function ResultsPage({
         ]}
       />
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <ApiResultsGrid results={results} initialQuery={q ?? ""} posterMap={posterMap} />
+        <ApiResultsGrid results={results} initialQuery={q ?? ""} initialCategory={category ?? null} posterMap={posterMap} />
       </div>
     </>
   );

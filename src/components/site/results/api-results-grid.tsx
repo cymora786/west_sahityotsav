@@ -13,10 +13,12 @@ import Image from "next/image";
 export function ApiResultsGrid({
   results,
   initialQuery = "",
+  initialCategory = null,
   posterMap = {},
 }: {
   results: ApiCompetition[];
   initialQuery?: string;
+  initialCategory?: string | null;
   posterMap?: Record<string, string>;
 }) {
   const [query, setQuery] = React.useState(initialQuery);
@@ -32,7 +34,7 @@ export function ApiResultsGrid({
 
   // Unique categories for quick-filter chips
   const categories = Array.from(new Set(results.map((r) => r.category)));
-  const [activeCategory, setActiveCategory] = React.useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = React.useState<string | null>(initialCategory);
 
   const displayed = activeCategory
     ? filtered.filter((r) => r.category === activeCategory)

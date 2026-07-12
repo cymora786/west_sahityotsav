@@ -118,6 +118,12 @@ export function getTeamPoints(limit = 0) {
   return apiFetch<ApiTeamPoint[]>(`/api/public/team-points?limit=${limit}&teamTypeName=General`);
 }
 
+export function getCategoryTeamPoints(category: string, limit = 0) {
+  return apiFetch<ApiTeamPoint[]>(
+    `/api/public/team-points?limit=${limit}&teamTypeName=${encodeURIComponent(category)}`
+  );
+}
+
 export function getPublishedCompetitions() {
   return apiFetch<ApiCompetition[]>("/api/public/competitions");
 }
