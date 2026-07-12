@@ -42,7 +42,7 @@ export async function LiveStandings() {
         </Link>
       </div>
 
-      <ul className="space-y-3">
+      <ul className="space-y-3"> 
         {rows.map((d, index) => {
           const width = Math.max(maxPoints > 0 ? (d.points / maxPoints) * 100 : 0, d.points > 0 ? 4 : 0);
           return (
