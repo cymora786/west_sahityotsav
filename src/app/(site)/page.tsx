@@ -56,9 +56,9 @@ export default async function HomePage() {
   );
 }
 
-const LIVE_VIDEO_ID = "yAogGfDNyso";
+const LIVE_VIDEO_ID = "EDjh_VWZ0wY";
 
-// Inline media widget styled to match the glass panels
+// Inline media widget styled to match the glass panels 
 async function MediaCompact() {
   const { getMedia } = await import("@/lib/queries");
   const dbVideos = await getMedia(3);

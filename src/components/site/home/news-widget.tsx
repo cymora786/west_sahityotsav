@@ -15,11 +15,11 @@ const priorityStyles: Record<string, string> = {
 };
 
 export async function NewsWidget({ inline }: { inline?: boolean } = {}) {
-  const items = await getAnnouncements(5);
+  const items = await getAnnouncements(4);
 
   return (
     <section className={inline ? "" : "mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8"}>
-      <div className="flex flex-wrap items-end justify-between gap-4">
+      <div className="flex flex-col items-start justify-start gap-4">
         <SectionHeading
           eyebrow="Stay Updated"
           title="News"
@@ -57,9 +57,7 @@ export async function NewsWidget({ inline }: { inline?: boolean } = {}) {
               )}
               <div className="min-w-0 flex-1">
                 <div className="mb-0.5 flex flex-wrap items-center gap-2">
-                  <Badge variant="outline" className={cn("text-xs", priorityStyles[item.priority])}>
-                    {item.priority}
-                  </Badge>
+                
                   <span className="text-xs text-muted-foreground">
                     {formatDistanceToNow(item.createdAt, { addSuffix: true })}
                   </span>
