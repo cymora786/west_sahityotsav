@@ -145,13 +145,15 @@ export default async function ResultDetailPage({
           }
         />
 
-        <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
-          <PosterView
-            result={result}
-            templates={templates}
-            shareSettings={shareSettings ?? undefined}
-            customPosterImage={competitionPoster?.posterImage ?? null}
-          />
+        <div className={competitionPoster?.posterImage ? "grid gap-10 lg:grid-cols-[1fr_380px]" : "max-w-xl"}>
+          {competitionPoster?.posterImage && (
+            <PosterView
+              result={result}
+              templates={templates}
+              shareSettings={shareSettings ?? undefined}
+              customPosterImage={competitionPoster.posterImage}
+            />
+          )}
 
           {/* Info panel */}
           <div className="space-y-6 lg:sticky lg:top-24 lg:self-start">
