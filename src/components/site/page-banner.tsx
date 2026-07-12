@@ -35,19 +35,11 @@ export function PageBanner({
           aria-hidden
           className="absolute inset-0 h-full w-full object-cover opacity-100 pointer-events-none select-none"
         />
-        {imageUrl && (
-          <Image
-            src={imageUrl}
-            alt=""
-            fill
-            className="object-cover opacity-20"
-            priority
-          />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#2e6ab1]/80 via-[#2e6ab1]/70 to-[#163b70]/60" />
+      {/* 
+        <div className="absolute inset-0 bg-gradient-to-br from-[#2e6ab1]/80 via-[#2e6ab1]/70 to-[#163b70]/60" /> */}
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-4 pt-32 pb-16 sm:px-6 sm:pt-36 sm:pb-20 lg:px-8">
+      <div className="relative mx-auto max-w-7xl px-4 pt-40 pb-16 sm:px-6 sm:pt-36 sm:pb-20 lg:px-8">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
             <nav className="mb-3 flex items-center gap-1.5 text-sm text-white/50">
