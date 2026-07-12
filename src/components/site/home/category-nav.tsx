@@ -10,6 +10,7 @@ const CATEGORIES = [
   { name: "Upper Primary",    color: "bg-teal-500/15 text-teal-600" },
   { name: "Lower Primary",    color: "bg-emerald-500/15 text-emerald-600" },
   { name: "General",          color: "bg-amber-500/15 text-amber-600" },
+  { name: "Campus Girls Parallel",          color: "bg-blue-500/15 text-blue-600" },
 ];
 
 export function CategoryNav() {

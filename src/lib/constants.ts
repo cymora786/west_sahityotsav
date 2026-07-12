@@ -21,7 +21,7 @@ export const CATEGORY_NAMES = [
 
 export const EVENT_STATS = {
   divisions: 12,
-  categories: 5,
+  categories: 9,
   items: 175,
   participants: 2000,
   days: 4,
