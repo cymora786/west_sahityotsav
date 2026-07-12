@@ -8,5 +8,5 @@ export function SsfLogoMark({ className, white }: { className?: string; white?: 
       <polygon points="16.95 29.25 22.6 0 16.95 0 11.3 29.23 16.95 29.25" fill={c1} />
       <polygon points="28.25 29.25 22.6 0 28.25 0 33.9 29.23 28.25 29.25" fill={c1} />
     </svg>
-  );
+  ); 
 }
