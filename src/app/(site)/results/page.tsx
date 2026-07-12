@@ -1,5 +1,5 @@
 import { getPublishedCompetitions } from "@/lib/sahityotsav-api";
-import { getGallery } from "@/lib/queries";
+import { getGallery, getAllCompetitionPosters } from "@/lib/queries";
 import { PageBanner } from "@/components/site/page-banner";
 import { ApiResultsGrid } from "@/components/site/results/api-results-grid";
 import { Trophy, ListChecks } from "lucide-react";
@@ -16,13 +16,17 @@ export default async function ResultsPage({
   searchParams: Promise<{ q?: string }>;
 }) {
   const { q } = await searchParams;
-  const [competitions, galleryImages] = await Promise.all([
+  const [competitions, galleryImages, allPosters] = await Promise.all([
     getPublishedCompetitions(),
     getGallery(1).catch(() => []),
+    getAllCompetitionPosters().catch(() => []),
   ]);
   const [bannerImage] = galleryImages;
 
   const results = competitions ?? [];
+  const posterMap = Object.fromEntries(
+    allPosters.filter((p) => p.posterImage).map((p) => [p.competitionId, p.posterImage!])
+  );
 
   return (
     <>
@@ -46,7 +50,7 @@ export default async function ResultsPage({
         ]}
       />
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <ApiResultsGrid results={results} initialQuery={q ?? ""} />
+        <ApiResultsGrid results={results} initialQuery={q ?? ""} posterMap={posterMap} />
       </div>
     </>
   );
