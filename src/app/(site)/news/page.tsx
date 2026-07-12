@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Image from "next/image";
 import Link from "next/link";
 import { getAnnouncements, getGallery } from "@/lib/queries";
@@ -54,9 +56,11 @@ export default async function NewsPage() {
                 <div className="flex min-w-0 flex-1 flex-col justify-between">
                   <div>
                     <div className="mb-1 flex flex-wrap items-center gap-2">
-                      <Badge variant="outline" className={cn(priorityStyles[item.priority])}>
-                        {item.priority}
-                      </Badge>
+                      {item.priority !== "NORMAL" && (
+                        <Badge variant="outline" className={cn(priorityStyles[item.priority])}>
+                          {item.priority}
+                        </Badge>
+                      )}
                       <span className="text-xs text-muted-foreground">
                         {format(item.createdAt, "dd MMM yyyy")}
                       </span>

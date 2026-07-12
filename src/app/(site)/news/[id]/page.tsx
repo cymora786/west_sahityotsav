@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -5,6 +7,7 @@ import { getAnnouncementById, getAnnouncements } from "@/lib/queries";
 import { PageBanner } from "@/components/site/page-banner";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, CalendarDays, Newspaper, Clock } from "lucide-react";
+import { ShareButton } from "@/components/site/news/share-button";
 import { format, formatDistanceToNow } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -84,18 +87,23 @@ export default async function NewsDetailPage({ params }: { params: Promise<{ id:
 
           <div className="p-6 sm:p-10">
             {/* Meta row */}
-            <div className="mb-6 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-              <Badge variant="outline" className={cn("px-3 py-1 text-xs font-semibold", priorityStyles[item.priority])}>
-                {priorityLabel[item.priority]}
-              </Badge>
-              <span className="flex items-center gap-1.5">
-                <CalendarDays className="size-3.5" />
-                {format(item.createdAt, "EEEE, dd MMMM yyyy")}
-              </span>
-              <span className="flex items-center gap-1.5">
-                <Clock className="size-3.5" />
-                {formatDistanceToNow(item.createdAt, { addSuffix: true })}
-              </span>
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-3">
+                {item.priority !== "NORMAL" && (
+                  <Badge variant="outline" className={cn("px-3 py-1 text-xs font-semibold", priorityStyles[item.priority])}>
+                    {priorityLabel[item.priority]}
+                  </Badge>
+                )}
+                <span className="flex items-center gap-1.5">
+                  <CalendarDays className="size-3.5" />
+                  {format(item.createdAt, "EEEE, dd MMMM yyyy")}
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Clock className="size-3.5" />
+                  {formatDistanceToNow(item.createdAt, { addSuffix: true })}
+                </span>
+              </div>
+              <ShareButton title={item.title} text={item.description} />
             </div>
 
             {/* Title */}

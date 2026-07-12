@@ -38,13 +38,17 @@ export async function createAnnouncement(
 
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
-  await prisma.announcement.create({
-    data: {
-      ...parsed.data,
-      body: parsed.data.body || null,
-      imageUrl: parsed.data.imageUrl || null,
-    },
-  });
+  try {
+    await prisma.announcement.create({
+      data: {
+        ...parsed.data,
+        body: parsed.data.body || null,
+        imageUrl: parsed.data.imageUrl || null,
+      },
+    });
+  } catch {
+    return { error: "Database error. Please try again in a moment." };
+  }
   revalidateAll();
   redirect("/admin/announcements");
 }
@@ -66,14 +70,18 @@ export async function updateAnnouncement(
 
   if (!parsed.success) return { error: parsed.error.issues[0].message };
 
-  await prisma.announcement.update({
-    where: { id },
-    data: {
-      ...parsed.data,
-      body: parsed.data.body || null,
-      imageUrl: parsed.data.imageUrl || null,
-    },
-  });
+  try {
+    await prisma.announcement.update({
+      where: { id },
+      data: {
+        ...parsed.data,
+        body: parsed.data.body || null,
+        imageUrl: parsed.data.imageUrl || null,
+      },
+    });
+  } catch {
+    return { error: "Database error. Please try again in a moment." };
+  }
   revalidateAll();
   redirect("/admin/announcements");
 }
