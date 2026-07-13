@@ -23,28 +23,35 @@ export default async function StandingsPage() {
 
   const localMap = new Map(divisions.map((d) => [d.name.toLowerCase(), d]));
 
-  // Use API team list as primary source; merge with local DB for slug/code
-  // Fall back to local DB list if API returns nothing
-  const teamList = apiPoints && apiPoints.length > 0
-    ? apiPoints.map((e, i) => {
-        const local = localMap.get(e.name.toLowerCase());
-        return {
-          id: local?.id ?? `api-${i}`,
-          name: e.name,
-          code: local?.code ?? e.name.slice(0, 3).toUpperCase(),
-          slug: local?.slug ?? e.name.toLowerCase().replace(/\s+/g, "-"),
-          points: e.point,
-          itemsParticipated: 0,
-        };
-      })
-    : divisions.map((d) => ({
-        id: d.id,
-        name: d.name,
-        code: d.code,
-        slug: d.slug,
-        points: 0,
-        itemsParticipated: 0,
-      }));
+  const STATIC_STANDINGS = [
+    { name: "Tirurangadi Division",    points: 822 },
+    { name: "Vengara Division",        points: 702 },
+    { name: "Kottakkal Division",      points: 542 },
+    { name: "Thenhippalam Division",   points: 542 },
+    { name: "Parappanangadi Division", points: 523 },
+    { name: "Vailathur Division",      points: 444 },
+    { name: "Tanur Division",          points: 438 },
+    { name: "Valanchery Division",     points: 430 },
+    { name: "Puthanathani Division",   points: 419 },
+    { name: "Edappal Division",        points: 412 },
+    { name: "Ponnani Division",        points: 343 },
+    { name: "Tirur Division",          points: 241 },
+  ];
+
+  // Always use static standings
+  const source = STATIC_STANDINGS;
+
+  const teamList = source.map((e, i) => {
+    const local = localMap.get(e.name.toLowerCase());
+    return {
+      id: local?.id ?? `static-${i}`,
+      name: e.name,
+      code: local?.code ?? e.name.slice(0, 3).toUpperCase(),
+      slug: local?.slug ?? e.name.toLowerCase().replace(/\s+/g, "-"),
+      points: e.points,
+      itemsParticipated: 0,
+    };
+  });
 
   const rows = teamList;
 
